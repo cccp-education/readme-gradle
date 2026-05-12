@@ -1,0 +1,169 @@
+= Readme Plugin — Directives Agent
+:toc: left
+:toclevels: 3
+:icons: font
+:sectnums:
+
+[CAUTION]
+====
+**ARRÊT OBLIGATOIRE** avant `rm`, `Write` (écrasement), ou suppression de fichier :
+1. LIRE le fichier en entier
+2. VÉRIFIER `git ls-files -- <fichier>` (si pas dans git = pas de retour possible)
+3. DEMANDER confirmation fichier par fichier à l'utilisateur
+4. ATTENDRE "oui" avant d'agir
+====
+
+== Avertissement — Racine de Travail
+
+**Ce fichier est dans `readme-gradle/readme-plugin/`**, la racine de travail du projet.
+Le répertoire parent `readme-gradle/` est le consumer (dogfooding) + repo git.
+La gouvernance vit dans le sous-projet plugin, pattern standard foundry.
+
+* Les chemins sont relatifs à **`readme-gradle/readme-plugin/`**
+* L'agent travaille depuis **`readme-gradle/readme-plugin/`**
+* `../` = `readme-gradle/` (racine repo git)
+* Les commandes Gradle s'exécutent depuis le répertoire courant (`./gradlew`)
+
+== Projet
+
+**Nom** : readme-gradle — plugin Gradle de génération README.adoc avec diagrammes PlantUML
+**Stack** : Kotlin, Gradle (plugin development), JGit, PlantUML
+**DAG** : N2
+**Documentation** : AsciiDoc
+
+=== Objectif
+
+Générer des fichiers `README.adoc` à partir de sources `README_truth.adoc`/`README_truth_fr.adoc`,
+en rendant les diagrammes PlantUML en PNG pour compatibilité GitHub.
+Tâches : `scaffoldReadme`, `processReadme`, `commitGeneratedReadme`.
+
+=== Contexte — Cercles de Confiance
+
+Ce projet vit dans `foundry/public/readme-gradle/readme-plugin/` → *cercle 4 (public, Apache 2.0)*.
+- Ne pas référencer de secrets ici
+- Voir `configuration/.agents/AGENT_GOVERNANCE.adoc`
+
+== Règles Absolues
+
+=== Git
+
+**INTERDICTION FORMELLE** de commit/push/merge sans permission explicite.
+Autorisé (lecture seule) : `git status`, `git diff`, `git log`, `git show`
+Interdit (sauf ordre) : `git add`, `git commit`, `git push`, `git merge`, `git rebase`
+
+=== Tests
+
+L'agent NE DOIT JAMAIS lancer de tests en fin de session SANS permission explicite.
+
+=== Sécurité
+
+* Jamais de secrets en dur dans le code
+* Jamais de tokens API commités dans Git
+
+=== Fichiers de configuration — RÈGLE ABSOLUE DE SÛRETÉ
+
+Backup avant modif fichier non tracké. Préserver valeurs sensibles. Privilégier edit partiel.
+
+=== Fichiers personnels — Interdiction de modifier
+
+L'agent NE DOIT JAMAIS modifier `~/.gitconfig`, `~/.bashrc`, `~/.ssh/config`, `~/.zshrc`, etc.
+
+=== Méthodologie de Travail
+
+* **1 fichier à la fois** + compilation immédiate
+* **Contexte léger** : Maximum 50k tokens EAGER
+* **Règle d'or** : 5x20min > 1x2h
+
+== Architecture du Projet
+
+[source,bash]
+----
+readme-gradle/                       # CONSUMER + REPO GIT
+├── build.gradle.kts                 # apply plugin
+├── settings.gradle.kts
+├── gradlew + gradle/
+├── readme-plugin/                   # ⭐ RACINE DE TRAVAIL
+│   ├── AGENT.adoc                   # Directives (ce fichier)
+│   ├── PROMPT_REPRISE.adoc          # Mission session
+│   ├── opencode.json                # Config opencode
+│   ├── build.gradle.kts             # java-gradle-plugin + maven-publish + signing
+│   ├── settings.gradle.kts          # rootProject.name = "readme-plugin"
+│   ├── .agents/                     # Gouvernance
+│   │   ├── INDEX.adoc
+│   │   ├── SESSIONS_HISTORY.adoc
+│   │   ├── SESSION_CHECKLIST.adoc
+│   │   ├── TEST_COVERAGE_ANALYSIS.adoc
+│   │   ├── sessions/
+│   │   ├── archives/
+│   │   └── encyclopedies/
+│   └── src/
+│       ├── main/kotlin/readme/
+│       │   ├── ReadmePlugin.kt      # Entry point
+│       │   ├── ScaffoldTask.kt      # scaffoldReadme
+│       │   ├── ProcessReadmeTask.kt # processReadme
+│       │   ├── CommitGeneratedReadmeTask.kt # commit + push
+│       │   └── ...                  # GitUtils, Validator, etc.
+│       ├── test/kotlin/readme/      # 3 unit tests
+│       ├── test/scenarios/          # 7 Cucumber scenarios
+│       └── functionalTest/          # 1 functional test
+└── .gitignore
+----
+
+=== Composants Clés
+
+* **ReadmePlugin** : Point d'entrée — enregistre extension + 3 tâches
+* **ScaffoldTask** : Crée `readme-truth.yml` + `.github/workflows/readme_truth.yml`
+* **ProcessReadmeTask** : Scan sources, rend PlantUML → PNG, réécrit blocs
+* **CommitGeneratedReadmeTask** : JGit commit/push en CI
+* **Cucumber** : 7 scénarios BDD (Minimal, Scaffold, Process, Commit, Integration)
+
+=== Commandes Utiles
+
+[source,shell]
+----
+./gradlew compileKotlin
+./gradlew test
+./gradlew publishToMavenLocal
+./gradlew cucumber
+----
+
+== Gestion du Contexte
+
+* **`PROMPT_REPRISE.adoc`** → mission session en cours
+* **`.agents/INDEX.adoc`** → roadmap + EPICs
+
+== Session Procedure
+
+=== Début
+
+1. `PROMPT_REPRISE.adoc` → mission
+2. `.agents/INDEX.adoc` → règles + roadmap
+3. `git status`
+4. `./gradlew compileKotlin`
+
+=== Fin — 6 étapes
+
+1. `.agents/sessions/{N}-{sujet}.adoc`
+2. `PROMPT_REPRISE.adoc` (max 70 lignes)
+3. `INDEX.adoc`
+4. `SESSIONS_HISTORY.adoc`
+5. `TEST_COVERAGE_ANALYSIS.adoc` (si tests modifiés)
+6. `COMPLETED_TASKS_ARCHIVE.adoc`
+
+== Conventions de Code
+
+* Kotlin idiomatique
+* Tests : JUnit5 + Cucumber (BDD)
+* Package : `readme`
+* Documentation : AsciiDoc
+
+== Anti-Patterns
+
+|===
+| # | Anti-pattern | Correction
+| 1 | **Agent sans opencode.json** | opencode.json AVANT AGENT.adoc
+| 2 | **PROMPT_REPRISE fantôme** | Mise à jour obligatoire
+| 3 | **Archive vide** | Jamais de "TODO"
+| 4 | **Session trop longue** | Splitter
+| 5 | **Split-brain .agents/** | UNIQUE dans le sous-projet plugin
+|===

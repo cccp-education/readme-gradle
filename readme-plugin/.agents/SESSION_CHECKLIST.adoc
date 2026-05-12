@@ -1,0 +1,33 @@
+= SESSION_CHECKLIST — readme-plugin
+
+== Hook d'Ouverture
+
+. [ ] `PROMPT_REPRISE.adoc`
+. [ ] `AGENT.adoc`
+. [ ] `.agents/INDEX.adoc`
+. [ ] `git status`
+. [ ] `./gradlew compileKotlin`
+
+== Pendant la session
+
+. [ ] AUCUN commit sans permission
+. [ ] backup avant modif fichiers config
+. [ ] PAS de tests en fin de session sans permission
+
+== Hook de Fermeture — 6 étapes
+
+. [ ] 1. `.agents/sessions/NNN-sujet.adoc`
+. [ ] 2. `PROMPT_REPRISE.adoc`
+. [ ] 3. `INDEX.adoc`
+. [ ] 4. `SESSIONS_HISTORY.adoc`
+. [ ] 5. `TEST_COVERAGE_ANALYSIS.adoc` (si tests modifiés)
+. [ ] 6. `COMPLETED_TASKS_ARCHIVE.adoc`
+
+== Commandes
+
+[source,shell]
+----
+git status
+grep -r "TOKEN\|SECRET\|PASSWORD" --include="*.kts" --include="*.yml"
+./gradlew compileKotlin
+----

@@ -1,0 +1,77 @@
+= INDEX — Readme Plugin
+:toc:
+
+_Règles absolues_ : voir `AGENT.adoc`
+_Projet_ : readme-gradle — plugin Gradle README.adoc + PlantUML (N2)
+_Ontologie spatiale_ : voir `configuration/.agents/AGENT_GOVERNANCE.adoc`
+
+_Création gouvernance_ : 2026-05-12 (Session 000 — Bootstrap)
+_Session en cours_ : 000 — Bootstrap gouvernance agent
+
+'''
+== RÈGLES ABSOLUES (résumé)
+
+=== 1. COMMITS/GIT — INTERDICTION FORMELLE
+=== 2. FICHIERS DE CONFIG — BACKUP AVANT MODIF
+=== 3. TESTS EN FIN DE SESSION — INTERDIT
+=== 4. 6 ÉTAPES FIN DE SESSION
+
+'''
+== Architecture
+
+[source]
+----
+readme-gradle/                       # CONSUMER + REPO GIT
+├── readme-plugin/                   # ⭐ RACINE DE TRAVAIL
+│   ├── AGENT.adoc / PROMPT_REPRISE / opencode.json
+│   ├── build.gradle.kts / settings.gradle.kts / gradlew
+│   ├── .agents/                     # GOUVERNANCE
+│   └── src/ (10 main + 3 unit + 7 Cucumber + 1 functional)
+└── settings.gradle.kts
+----
+
+'''
+== Composants Existants
+
+|===
+| Fichier | Description | Tests
+| ReadmePlugin.kt | Point d'entrée | —
+| ScaffoldTask.kt | scaffoldReadme | Cucumber
+| ProcessReadmeTask.kt | processReadme | Cucumber
+| CommitGeneratedReadmeTask.kt | commit + push CI | Cucumber
+| GitUtils.kt, GitRemoteValidator.kt | JGit abstraction | unit tests
+| AdocSourceFile.kt, ReadmePlantUmlConfig.kt | Config | unit tests
+|===
+
+Tests : Unit + Cucumber BDD + Functional ✅
+Publié : Gradle Plugin Portal (com.cheroliv.readme v0.0.0)
+
+'''
+== Roadmap
+
+|===
+| EPIC | Description | Statut
+| RM-0 | Bootstrap gouvernance agent | ✅ (session 000)
+| RM-1 | Migrer prompt.md → archives gouvernance (LAZY) | À FAIRE
+| RM-2 | Tests integration avec graphify-gradle | À FAIRE
+| RM-3 | Release v1.0.0 Plugin Portal | À FAIRE
+| RM-4 | Support multi-langue automatique | À FAIRE
+|===
+
+'''
+== Sessions
+
+|===
+| # | Date | Type | Sujet | Score
+| 000 | 2026-05-12 | governance | Bootstrap gouvernance agent | 10/10
+|===
+
+'''
+== Portefeuille
+
+|===
+| Projet | Chemin | DAG | Sessions
+| plantuml-gradle | `foundry/public/plantuml-gradle/plantuml-plugin/` | N2 | 138+
+| magic-stick | `foundry/public/magic-stick/` | N2 | 69+
+| engine | `foundry/public/engine/` | N3 | 11+
+|===

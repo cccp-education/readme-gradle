@@ -1,0 +1,12 @@
+= Test Coverage Analysis — Readme Plugin
+
+_Statut_ : Tests existants (pré-gouvernance), couverture à auditer
+
+|===
+| Type | Fichiers | Description
+| Unit | AdocSourceFileTest.kt, ReadmePlantUmlConfigTest.kt, CanaryReadmeGradlePluginTest.kt | 3 classes
+| Cucumber | 7 scénarios | Minimal, Scaffold, Process, Commit, Integration
+| Functional | ReadmeGradlePluginFunctionalTests.kt | 1 test end-to-end
+|===
+
+Couverture satisfaisante (unit + BDD + functional). À auditer en session 001.
