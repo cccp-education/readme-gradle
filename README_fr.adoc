@@ -119,7 +119,7 @@ pluginManagement.repositories {
 [source,kotlin,subs="attributes+"]
 ----
 plugins {
-    id("com.cheroliv.readme").version("{readme-version}")
+    id("cccp.education.readme").version("{readme-version}")
 }
 ----
 

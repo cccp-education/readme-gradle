@@ -75,7 +75,7 @@ slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 
 [plugins]
-readme = { id = "com.cheroliv.readme", version.ref = "readme" }
+readme = { id = "cccp.education.readme", version.ref = "readme" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }
 

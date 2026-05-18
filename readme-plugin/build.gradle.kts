@@ -10,7 +10,7 @@ plugins {
     alias(libs.plugins.publish)
 }
 
-group = "com.cheroliv"
+group = "cccp.education"
 version = libs.plugins.readme.get().version
 kotlin.jvmToolchain(VERSION_24.ordinal)
 
@@ -172,8 +172,8 @@ tasks.check {
 
 // ── Gradle plugin metadata ────────────────────────────────────────────────────
 gradlePlugin {
-    website.set("https://github.com/cheroliv/readme-gradle/")
-    vcsUrl.set("https://github.com/cheroliv/readme-gradle.git")
+    website.set("https://github.com/cccp-education/readme-gradle/")
+    vcsUrl.set("https://github.com/cccp-education/readme-gradle.git")
 
     plugins {
         create("readme") {
@@ -220,9 +220,9 @@ publishing {
                     }
                     developers {
                         developer {
-                            id.set("cheroliv")
-                            name.set("cheroliv")
-                            email.set("cheroliv.developer@gmail.com")
+                            id.set("prologeek")
+                            name.set("Prologeek")
+                            email.set("prologeek@cccp.education")
                         }
                     }
                     scm {

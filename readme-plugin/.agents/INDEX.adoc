@@ -44,7 +44,7 @@ readme-gradle/                       # CONSUMER + REPO GIT
 |===
 
 Tests : Unit + Cucumber BDD + Functional ✅
-Publié : Gradle Plugin Portal (com.cheroliv.readme v0.0.0)
+Publié : Gradle Plugin Portal (cccp.education.readme v0.0.0)
 
 '''
 == Roadmap

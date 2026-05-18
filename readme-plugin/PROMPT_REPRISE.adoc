@@ -13,7 +13,7 @@ gouvernance formelle jusqu'ici.
 - 10 fichiers source dans src/main/kotlin/readme/
 - 3 tests unitaires, 7 scénarios Cucumber, 1 functional test
 - build.gradle.kts avec java-gradle-plugin + maven-publish + signing
-- Publié sur Gradle Plugin Portal : com.cheroliv.readme v0.0.0
+- Publié sur Gradle Plugin Portal : cccp.education.readme v0.0.0
 - Prompt.md (113K) — documentation technique détaillée
 
 == Mission du Jour — Session 000
