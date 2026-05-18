@@ -12,9 +12,9 @@ Feature: Commit generated README files
     And the git remote validator is mocked with result "TOKEN_PLACEHOLDER"
     And a git repository is initialized
 
-  # ── Groupe 1 — dépendance processReadme ───────────────────────────────────
+  # ── Groupe 1 — dépendance transformReadme ───────────────────────────────────
 
-  Scenario: commitGeneratedReadme triggers processReadme automatically
+  Scenario: commitGeneratedReadme triggers transformReadme automatically
     Given the commit task is mocked
     And the file "README_truth.adoc" exists with the following content:
       """

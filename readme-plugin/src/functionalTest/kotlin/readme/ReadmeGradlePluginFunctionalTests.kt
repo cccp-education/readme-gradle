@@ -42,13 +42,13 @@ class ReadmeGradlePluginFunctionalTests {
     """.trimIndent()
 
     @Test
-    fun `processReadme succeeds on empty project`() {
+    fun `transformReadme succeeds on empty project`() {
         setupProject()
 
         val result = GradleRunner.create()
             .forwardOutput()
             .withPluginClasspath()
-            .withArguments("processReadme", "--stacktrace")
+            .withArguments("transformReadme", "--stacktrace")
             .withProjectDir(projectDir)
             .build()
 
@@ -56,13 +56,13 @@ class ReadmeGradlePluginFunctionalTests {
     }
 
     @Test
-    fun `scaffoldReadme creates readme yml`() {
+    fun `generateReadme creates readme yml`() {
         setupProject()
 
         GradleRunner.create()
             .forwardOutput()
             .withPluginClasspath()
-            .withArguments("scaffoldReadme")
+            .withArguments("generateReadme")
             .withProjectDir(projectDir)
             .build()
 
@@ -70,13 +70,13 @@ class ReadmeGradlePluginFunctionalTests {
     }
 
     @Test
-    fun `scaffoldReadme creates github actions workflow`() {
+    fun `generateReadme creates github actions workflow`() {
         setupProject()
 
         GradleRunner.create()
             .forwardOutput()
             .withPluginClasspath()
-            .withArguments("scaffoldReadme")
+            .withArguments("generateReadme")
             .withProjectDir(projectDir)
             .build()
 
@@ -84,7 +84,7 @@ class ReadmeGradlePluginFunctionalTests {
     }
 
     @Test
-    fun `scaffoldReadme does not overwrite existing files`() {
+    fun `generateReadme does not overwrite existing files`() {
         setupProject()
 
         // ← YAML valide obligatoire — Jackson parse le fichier au chargement du plugin
@@ -97,7 +97,7 @@ class ReadmeGradlePluginFunctionalTests {
         GradleRunner.create()
             .forwardOutput()
             .withPluginClasspath()
-            .withArguments("scaffoldReadme")
+            .withArguments("generateReadme")
             .withProjectDir(projectDir)
             .build()
 
@@ -107,7 +107,7 @@ class ReadmeGradlePluginFunctionalTests {
     }
 
     @Test
-    fun `processReadme generates README from README_truth source file`() {
+    fun `transformReadme generates README from README_truth source file`() {
         setupProject()
 
         File(projectDir, "README_truth.adoc").writeText("""
@@ -119,7 +119,7 @@ class ReadmeGradlePluginFunctionalTests {
         GradleRunner.create()
             .forwardOutput()
             .withPluginClasspath()
-            .withArguments("processReadme")
+            .withArguments("transformReadme")
             .withProjectDir(projectDir)
             .build()
 

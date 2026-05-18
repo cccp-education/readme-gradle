@@ -1,3 +1,5 @@
-pluginManagement.repositories.gradlePluginPortal()
-
+pluginManagement.repositories {
+    mavenLocal()
+    gradlePluginPortal()
+}
 rootProject.name = "readme-plugin"

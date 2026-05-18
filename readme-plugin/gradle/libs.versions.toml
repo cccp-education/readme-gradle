@@ -27,6 +27,7 @@ langchain4j-beta = "1.14.1-beta24"
 docker-java = "3.7.0"
 testcontainers-pg = "1.21.4"
 logback = "1.5.32"
+codebase = "0.0.1"
 
 [libraries]
 plantuml = { module = "net.sourceforge.plantuml:plantuml", version.ref = "plantuml" }
@@ -75,9 +76,10 @@ slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 
 [plugins]
-readme = { id = "cccp.education.readme", version.ref = "readme" }
+readme = { id = "education.cccp.readme", version.ref = "readme" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }
+codebase = { id = "education.cccp.codebase", version.ref = "codebase" }
 
 [bundles]
 readme-ai = [

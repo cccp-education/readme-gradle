@@ -35,7 +35,7 @@ La gouvernance vit dans le sous-projet plugin, pattern standard foundry.
 
 Générer des fichiers `README.adoc` à partir de sources `README_truth.adoc`/`README_truth_fr.adoc`,
 en rendant les diagrammes PlantUML en PNG pour compatibilité GitHub.
-Tâches : `scaffoldReadme`, `processReadme`, `commitGeneratedReadme`.
+Tâches : `generateReadme`, `transformReadme`, `commitGeneratedReadme`.
 
 === Contexte — Cercles de Confiance
 
@@ -99,8 +99,8 @@ readme-gradle/                       # CONSUMER + REPO GIT
 │   └── src/
 │       ├── main/kotlin/readme/
 │       │   ├── ReadmePlugin.kt      # Entry point
-│       │   ├── ScaffoldTask.kt      # scaffoldReadme
-│       │   ├── ProcessReadmeTask.kt # processReadme
+│   │   ├── ScaffoldTask.kt      # generateReadme
+│   │   ├── ProcessReadmeTask.kt # transformReadme
 │       │   ├── CommitGeneratedReadmeTask.kt # commit + push
 │       │   └── ...                  # GitUtils, Validator, etc.
 │       ├── test/kotlin/readme/      # 3 unit tests

@@ -14,20 +14,20 @@ class ReadmePlugin : Plugin<Project> {
         // even when the Gradle project lives in a subdirectory.
         val imgDir = GitUtils.resolveImgDir(project.projectDir, config.output.imgDir)
 
-        val scaffold = project.tasks.register(
-            "scaffoldReadme",
+        val generateReadme = project.tasks.register(
+            "generateReadme",
             ScaffoldTask::class.java
         ) { task ->
-            task.group       = "documentation"
+            task.group       = "generate"
             task.description = "Creates readme.yml and .github/workflows/readme_action.yml if absent"
             task.projectDir  .set(project.layout.projectDirectory)
         }
 
-        val processReadme = project.tasks.register(
-            "processReadme",
+        val transformReadme = project.tasks.register(
+            "transformReadme",
             ProcessReadmeTask::class.java
         ) { task ->
-            task.group       = "documentation"
+            task.group       = "transform"
             task.description = "Generate README*.adoc and images from README_truth*.adoc sources"
 
             task.sourceDir  .set(project.layout.projectDirectory.dir(config.source.dir))
@@ -35,14 +35,14 @@ class ReadmePlugin : Plugin<Project> {
             task.buildImgDir.set(project.layout.buildDirectory.dir("img"))
             task.defaultLang.set(config.source.defaultLang)
 
-            task.dependsOn(scaffold)
+            task.dependsOn(generateReadme)
         }
 
         project.tasks.register(
             "commitGeneratedReadme",
             CommitGeneratedReadmeTask::class.java
         ) { task ->
-            task.group       = "documentation"
+            task.group       = "deploy"
             task.description = "Commits and pushes README*.adoc generated via JGit (CI only)"
 
             task.repoDir      .set(project.layout.projectDirectory)
@@ -51,7 +51,7 @@ class ReadmePlugin : Plugin<Project> {
             task.commitMessage.set(config.git.commitMessage)
             task.gitToken     .set(project.provider { config.git.resolvedToken() })
 
-            task.dependsOn(processReadme)
+            task.dependsOn(transformReadme)
         }
     }
 }

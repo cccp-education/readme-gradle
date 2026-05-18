@@ -6,8 +6,8 @@ Feature: Scaffold README configuration
 
   # ── File creation ──────────────────────────────────────────────────────────
 
-  Scenario: scaffoldReadme creates readme.yml when absent
-    When I am executing the task "scaffoldReadme"
+  Scenario: generateReadme creates readme.yml when absent
+    When I am executing the task "generateReadme"
     Then the build should succeed
     And the following files should exist:
       | file                                     |
@@ -17,7 +17,7 @@ Feature: Scaffold README configuration
   # ── Default values ─────────────────────────────────────────────────────────
 
   Scenario: generated readme.yml contains expected source config
-    When I am executing the task "scaffoldReadme"
+    When I am executing the task "generateReadme"
     Then the build should succeed
     And the file "readme.yml" should contain the following yaml values:
       | key                  | value                                    |
@@ -25,14 +25,14 @@ Feature: Scaffold README configuration
       | source.defaultLang   | en                                       |
 
   Scenario: generated readme.yml contains expected output config
-    When I am executing the task "scaffoldReadme"
+    When I am executing the task "generateReadme"
     Then the build should succeed
     And the file "readme.yml" should contain the following yaml values:
       | key              | value                                    |
       | output.imgDir    | .github/workflows/readmes/images         |
 
   Scenario: generated readme.yml contains expected git config
-    When I am executing the task "scaffoldReadme"
+    When I am executing the task "generateReadme"
     Then the build should succeed
     And the file "readme.yml" should contain the following yaml values:
       | key                  | value                                                      |
@@ -47,12 +47,12 @@ Feature: Scaffold README configuration
 
   # ── Idempotence ────────────────────────────────────────────────────────────
 
-  Scenario: scaffoldReadme does not overwrite existing files
+  Scenario: generateReadme does not overwrite existing files
     Given the following files already exist:
       | file                                     | content               |
       | readme.yml                               | # existing config     |
       | .github/workflows/readme_action.yml      | # existing workflow   |
-    When I am executing the task "scaffoldReadme"
+    When I am executing the task "generateReadme"
     Then the build should succeed
     And the following files should still contain their original content:
       | file                                     | content               |
@@ -65,7 +65,7 @@ Feature: Scaffold README configuration
     Given a "readme.yml" with the following yaml values:
       | key                  | value |
       | source.defaultLang   |       |
-    When I am executing the task "scaffoldReadme"
+    When I am executing the task "generateReadme"
     Then the build should succeed
     And the build log should contain the following entries:
       | level  | keyword      | value  |
@@ -75,7 +75,7 @@ Feature: Scaffold README configuration
     Given a "readme.yml" with the following yaml values:
       | key            | value |
       | output.imgDir  |       |
-    When I am executing the task "scaffoldReadme"
+    When I am executing the task "generateReadme"
     Then the build should succeed
     And the build log should contain the following entries:
       | level  | keyword  | value                             |
@@ -87,7 +87,7 @@ Feature: Scaffold README configuration
     Given a "readme.yml" with the following yaml values:
       | key         | value              |
       | source.dir  | /nonexistent/path  |
-    When I am executing the task "scaffoldReadme"
+    When I am executing the task "generateReadme"
     Then the build should fail
     And the build log should contain the following entries:
       | level  | keyword    | value       |
@@ -97,7 +97,7 @@ Feature: Scaffold README configuration
     Given a "readme.yml" with the following yaml values:
       | key           | value                  |
       | output.imgDir | readme.yml/impossible  |
-    When I am executing the task "scaffoldReadme"
+    When I am executing the task "generateReadme"
     Then the build should fail
     And the build log should contain the following entries:
       | level | keyword | value   |
@@ -108,7 +108,7 @@ Feature: Scaffold README configuration
       | key           | value                            |
       | output.imgDir | .github/workflows/readmes/images |
     And the directory ".github/workflows/readmes/images" exists and is not writable
-    When I am executing the task "scaffoldReadme"
+    When I am executing the task "generateReadme"
     Then the build should fail
     And the build log should contain the following entries:
       | level | keyword | value    |
@@ -120,7 +120,7 @@ Feature: Scaffold README configuration
     Given a "readme.yml" with the following yaml values:
       | key        | value              |
       | git.token  | <YOUR_GITHUB_PAT>  |
-    When I am executing the task "scaffoldReadme"
+    When I am executing the task "generateReadme"
     Then the build should succeed
     And the build log should contain the following entries:
       | level  | keyword  | value        |
@@ -131,7 +131,7 @@ Feature: Scaffold README configuration
       | key        | value        |
       | git.token  | ghp_valid    |
     And the git remote validator is mocked with result "UNREACHABLE"
-    When I am executing the task "scaffoldReadme"
+    When I am executing the task "generateReadme"
     Then the build should succeed
     And the build log should contain the following entries:
       | level  | keyword  | value        |
@@ -142,7 +142,7 @@ Feature: Scaffold README configuration
       | key        | value      |
       | git.token  | ghp_valid  |
     And the git remote validator is mocked with result "REPOSITORY_NOT_FOUND"
-    When I am executing the task "scaffoldReadme"
+    When I am executing the task "generateReadme"
     Then the build should succeed
     And the build log should contain the following entries:
       | level  | keyword     | value      |
@@ -153,7 +153,7 @@ Feature: Scaffold README configuration
       | key        | value      |
       | git.token  | ghp_valid  |
     And the git remote validator is mocked with result "INSUFFICIENT_PUSH_RIGHTS"
-    When I am executing the task "scaffoldReadme"
+    When I am executing the task "generateReadme"
     Then the build should succeed
     And the build log should contain the following entries:
       | level  | keyword  | value               |
@@ -161,13 +161,13 @@ Feature: Scaffold README configuration
 
   # ── Integration ────────────────────────────────────────────────────────────
 
-  Scenario: processReadme succeeds after scaffold with invalid git config
+  Scenario: transformReadme succeeds after scaffold with invalid git config
     Given a "readme.yml" with the following yaml values:
       | key        | value             |
       | git.token  | <YOUR_GITHUB_PAT> |
     And the git remote validator is mocked with result "TOKEN_PLACEHOLDER"
     And the file "README_truth.adoc" exists with content "= Hello"
-    When I am executing the task "processReadme"
+    When I am executing the task "transformReadme"
     Then the build should succeed
     And the following files should exist:
       | file         |

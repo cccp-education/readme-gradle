@@ -159,7 +159,7 @@ abstract class ScaffoldTask : DefaultTask() {
                 logger.warn(
                     "[WARN]  GitHub is unreachable — " +
                     "remote validation skipped\n" +
-                    "→ processReadme remains fully operational"
+                    "→ transformReadme remains fully operational"
                 )
             }
             is GitValidationResult.RepositoryNotFound -> {

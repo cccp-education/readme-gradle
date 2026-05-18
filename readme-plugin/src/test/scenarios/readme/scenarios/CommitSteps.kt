@@ -26,7 +26,7 @@ class CommitSteps(private val world: ReadMeWorld) {
      *  4. Create an initial commit — HEAD exists, git status is clean.
      *
      * This step must run after all project files have been created by the
-     * Background (createGradleProject, writeProjectFile, scaffoldReadme side-effects).
+     * Background (createGradleProject, writeProjectFile, generateReadme side-effects).
      * Staging "." covers everything present at init time.
      */
     @Given("a git repository is initialized")

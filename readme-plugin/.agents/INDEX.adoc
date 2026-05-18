@@ -37,8 +37,8 @@ readme-gradle/                       # CONSUMER + REPO GIT
 |===
 | Fichier | Description | Tests
 | ReadmePlugin.kt | Point d'entrée | —
-| ScaffoldTask.kt | scaffoldReadme | Cucumber
-| ProcessReadmeTask.kt | processReadme | Cucumber
+| ScaffoldTask.kt | generateReadme | Cucumber
+| ProcessReadmeTask.kt | transformReadme | Cucumber
 | CommitGeneratedReadmeTask.kt | commit + push CI | Cucumber
 | GitUtils.kt, GitRemoteValidator.kt | JGit abstraction | unit tests
 | AdocSourceFile.kt, ReadmePlantUmlConfig.kt | Config | unit tests

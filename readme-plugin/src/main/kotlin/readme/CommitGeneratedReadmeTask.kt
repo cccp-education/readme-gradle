@@ -98,7 +98,7 @@ abstract class CommitGeneratedReadmeTask : DefaultTask() {
      *
      * Uses targeted pattern matching instead of status.isClean so that
      * unrelated untracked files (e.g. .github/workflows/readme_action.yml
-     * created by scaffoldReadme) do not trigger a spurious commit.
+     * created by generateReadme) do not trigger a spurious commit.
      */
     private fun hasReadmeChanges(status: Status): Boolean {
         val allChanged = status.added + status.changed + status.modified +

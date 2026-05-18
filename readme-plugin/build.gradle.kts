@@ -8,9 +8,10 @@ plugins {
     `java-gradle-plugin`
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.publish)
+    alias(libs.plugins.codebase)
 }
 
-group = "cccp.education"
+group = "education.cccp"
 version = libs.plugins.readme.get().version
 kotlin.jvmToolchain(VERSION_24.ordinal)
 
@@ -220,9 +221,9 @@ publishing {
                     }
                     developers {
                         developer {
-                            id.set("prologeek")
-                            name.set("Prologeek")
-                            email.set("prologeek@cccp.education")
+                            id.set("cccp-education")
+                            name.set("CCCP Education")
+                            email.set("cccp.education@gmail.com")
                         }
                     }
                     scm {
