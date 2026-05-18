@@ -6,7 +6,8 @@ _Projet_ : readme-gradle — plugin Gradle README.adoc + PlantUML (N2)
 _Ontologie spatiale_ : voir `configuration/.agents/AGENT_GOVERNANCE.adoc`
 
 _Création gouvernance_ : 2026-05-12 (Session 000 — Bootstrap)
-_Session en cours_ : 000 — Bootstrap gouvernance agent
+_Session terminee_ : 001 — Migration CCCP namespace (13 files)
+_Session en cours_ : 002 — (a definir)
 
 '''
 == RÈGLES ABSOLUES (résumé)
@@ -63,6 +64,7 @@ Publié : Gradle Plugin Portal (cccp.education.readme v0.0.0)
 
 |===
 | # | Date | Type | Sujet | Score
+| 001 | 2026-05-18 | migration | CCCP — namespace rename com.cheroliv → cccp.education (13 fichiers) | 10/10
 | 000 | 2026-05-12 | governance | Bootstrap gouvernance agent | 10/10
 |===
 

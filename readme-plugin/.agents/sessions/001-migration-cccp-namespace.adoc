@@ -1,0 +1,22 @@
+= Session 001 — Migration CCCP Namespace (13 files)
+:author: cheroliv + opencode
+:date: 2026-05-18
+:status: TERMINE
+
+== Contexte
+Migration complete du namespace CCCP — `com.cheroliv` → `cccp.education`
+dans tous les fichiers du projet readme-gradle.
+
+== Actions
+* replaceAll groupId `com.cheroliv` → `cccp.education` dans 13 fichiers :
+** 4 README adoc (README, README_fr, README_truth, README_truth_fr)
+** 2 libs.versions.toml (racine + plugin)
+** index.adoc, PROMPT_REPRISE.adoc
+** build.gradle.kts
+** 4 fichiers de test/scenarios
+* Tous les packages restent en `readme.*` (pas de `com.cheroliv`)
+
+== Résultat
+✅ Commit c054cee — 13 files, push OK
+✅ Compilation readme-plugin OK
+⚠️ Racine : echec consommation `cccp.education.readme:0.0.1` (pas encore sur Portal — CCCP-5)
