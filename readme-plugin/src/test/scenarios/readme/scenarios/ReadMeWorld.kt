@@ -147,7 +147,7 @@ class ReadMeWorld {
     // ── Project setup ─────────────────────────────────────────────────────────
 
     fun createGradleProject(): File {
-        val pluginId = "cccp.education.readme"
+        val pluginId = "education.cccp.readme"
         return createTempDir("gradle-test-").also { dir ->
             dir.resolve("settings.gradle.kts").writeText(
                 "pluginManagement.repositories.gradlePluginPortal()\n" +

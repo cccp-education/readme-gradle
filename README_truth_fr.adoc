@@ -375,7 +375,7 @@ pluginManagement.repositories {
 [source,kotlin,subs="attributes+"]
 ----
 plugins {
-    id("cccp.education.readme").version("{readme-version}")
+    id("education.cccp.readme").version("{readme-version}")
 }
 ----
 

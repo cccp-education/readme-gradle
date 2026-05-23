@@ -45,7 +45,7 @@ readme-gradle/                       # CONSUMER + REPO GIT
 |===
 
 Tests : Unit + Cucumber BDD + Functional ✅
-Publié : Gradle Plugin Portal (cccp.education.readme v0.0.0)
+Publié : Gradle Plugin Portal (education.cccp.readme v0.0.0)
 
 '''
 == Roadmap
@@ -75,5 +75,5 @@ Publié : Gradle Plugin Portal (cccp.education.readme v0.0.0)
 | Projet | Chemin | DAG | Sessions
 | plantuml-gradle | `foundry/public/plantuml-gradle/plantuml-plugin/` | N2 | 138+
 | magic-stick | `foundry/public/magic-stick/` | N2 | 69+
-| engine | `foundry/public/engine/` | N3 | 11+
+| runner-gradle | `foundry/public/runner-gradle/` | N3 | 11+
 |===

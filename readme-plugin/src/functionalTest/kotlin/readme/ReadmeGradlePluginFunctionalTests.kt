@@ -10,7 +10,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /**
- * Functional tests for the 'cccp.education.readme' plugin.
+ * Functional tests for the 'education.cccp.readme' plugin.
  */
 class ReadmeGradlePluginFunctionalTests {
 
@@ -22,7 +22,7 @@ class ReadmeGradlePluginFunctionalTests {
 
     private fun setupProject() {
         settingsFile.writeText("""rootProject.name = "test-project"""")
-        buildFile.writeText("""plugins { id("cccp.education.readme") }""")
+        buildFile.writeText("""plugins { id("education.cccp.readme") }""")
     }
 
     // YAML valide minimal pour les tests qui pré-créent readme.yml

@@ -4,11 +4,11 @@
 :status: TERMINE
 
 == Contexte
-Migration complete du namespace CCCP — `com.cheroliv` → `cccp.education`
+Migration complete du namespace CCCP — `com.cheroliv` → `education.cccp`
 dans tous les fichiers du projet readme-gradle.
 
 == Actions
-* replaceAll groupId `com.cheroliv` → `cccp.education` dans 13 fichiers :
+* replaceAll groupId `com.cheroliv` → `education.cccp` dans 13 fichiers :
 ** 4 README adoc (README, README_fr, README_truth, README_truth_fr)
 ** 2 libs.versions.toml (racine + plugin)
 ** index.adoc, PROMPT_REPRISE.adoc

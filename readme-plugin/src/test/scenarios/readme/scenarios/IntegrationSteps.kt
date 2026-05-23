@@ -43,7 +43,7 @@ class IntegrationSteps(private val world: ReadMeWorld) {
      */
     @Given("a temporary git repository is set up with remote origin")
     fun givenTemporaryRepoWithRemote() {
-        val pluginId = "cccp.education.readme"
+        val pluginId = "education.cccp.readme"
 
         // Resolve the readme.yml from the current working directory (CI injects it)
         val configFile = File("readme.yml")
