@@ -1,0 +1,27 @@
+= PROMPT_REPRISE — Chiraq (readme-plugin)
+:date: 2026-06-01
+:session: 003
+:status: EN ATTENTE
+
+== Mission
+Prochaine session à définir parmi les EPICs en attente (RM-1, RM-3, RM-5→RM-10).
+
+== Session écoulée
+002 — Code review complète (score 3.8/5) + enregistrement borough CHIRAQ 🟤
+Ajout GLOBAL_CODE_REVIEW.adoc V20, AGENTS.adoc (13 boroughs), INDEX.adoc, archivage.
+
+== Priorités (par ordre suggéré)
+1. RM-5 : Aligner README_truth*.adoc sur les noms de tâches actuels
+2. RM-7 : Supprimer node-gradle des dépendances
+3. RM-8 : Traduire logs/KDoc en anglais
+4. RM-3 : Release v1.0.0 Plugin Portal
+
+== Contexte
+Borough CHIRAQ 🟤 — 13ème borough. Code review terminée (score 3.8/5).
+10 EPICs dans la roadmap (RM-0 ✅, RM-1→RM-10 à faire).
+Pipeline : generateReadme → transformReadme → commitGeneratedReadme.
+
+== Rappel
+- INTERDICTION de commit/push sans permission
+- Vérifier AGENT.adoc avant d'agir
+- Pas de tests en fin de session sans permission

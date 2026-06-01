@@ -1,0 +1,6 @@
+= Completed Tasks Archive — Juin 2026
+
+|===
+| Date | Session | EPIC/US | Description
+| 2026-06-01 | 002 | RM-0 | Code review complète (score 3.8/5) + enregistrement borough CHIRAQ 🟤 (13ème borough). Création session 002, mise à jour AGENTS.adoc, INDEX.adoc, SESSIONS_HISTORY.adoc, PROMPT_REPRISE.adoc. Roadmap enrichie de 6 nouveaux EPICs (RM-5 → RM-10). Ajout V20 dans GLOBAL_CODE_REVIEW.adoc (configuration/). Archivage et clôture session 002.
+|===

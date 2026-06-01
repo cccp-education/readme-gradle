@@ -1,0 +1,30 @@
+= Session 002 — Code Review + Enregistrement Borough CHIRAQ
+:author: cheroliv + deepseek-v4-pro
+:date: 2026-06-01
+:status: TERMINE
+
+== Contexte
+Session de code review complète sur readme-gradle (readme-plugin).
+Le projet n'était pas répertorié dans le portefeuille des boroughs.
+Création du 13ème borough CHIRAQ 🟤.
+
+== Actions
+* Code review complète : 9 fichiers source, 42+ scénarios Cucumber, 5 features, tests
+* Score : 3.8/5
+* Création borough CHIRAQ dans AGENTS.adoc (13ème borough)
+* Mise à jour chaîne de valeur
+* Ajout Historique des Mises à Jour
+* Mise à jour INDEX.adoc du readme-plugin (portefeuille 13 boroughs)
+
+== Problèmes identifiés
+* 🔴 CRITIQUE : Token GitHub en clair dans `readme.yml` (voir alerte)
+* 🟡 MAJEUR : Doc README non alignée sur noms de tâches EPIC K
+* 🟡 MAJEUR : node-gradle dépendance inutilisée
+* 🟢 MINEUR : Logs français, KDoc français, prompt.md obsolète
+
+== Décisions
+* Borough créé sous CHIRAQ 🟤 — N2, README génération PlantUML
+* Prochaine session : RM-1 (archivage prompt.md) ou RM-3 (release v1.0.0)
+
+== Score
+10/10 — Enregistrement borough + code review complète

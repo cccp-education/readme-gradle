@@ -1,13 +1,14 @@
-= INDEX — Readme Plugin
+= INDEX — Chiraq (readme-plugin)
 :toc:
 
 _Règles absolues_ : voir `AGENT.adoc`
 _Projet_ : readme-gradle — plugin Gradle README.adoc + PlantUML (N2)
+_Borough_ : Chiraq 🟤 — 13ème borough
 _Ontologie spatiale_ : voir `configuration/.agents/AGENT_GOVERNANCE.adoc`
 
 _Création gouvernance_ : 2026-05-12 (Session 000 — Bootstrap)
 _Session terminee_ : 001 — Migration CCCP namespace (13 files)
-_Session en cours_ : 002 — (a definir)
+_Session terminee_ : 002 — Code review complète + enregistrement borough CHIRAQ
 
 '''
 == RÈGLES ABSOLUES (résumé)
@@ -57,6 +58,12 @@ Publié : Gradle Plugin Portal (education.cccp.readme v0.0.0)
 | RM-2 | Tests integration avec graphify-gradle | À FAIRE
 | RM-3 | Release v1.0.0 Plugin Portal | À FAIRE
 | RM-4 | Support multi-langue automatique | À FAIRE
+| RM-5 | Aligner README_truth*.adoc sur les noms de tâches actuels (generateReadme, transformReadme, commitGeneratedReadme) — remplacer les occurences de processReadme et scaffoldReadme | À FAIRE
+| RM-6 | Nettoyer prompt.md (obsolète — référence com.cheroliv, anciens noms de tâches) | À FAIRE
+| RM-7 | Supprimer ou repasser en compileOnly la dépendance node-gradle (implémentation inutilisée) | À FAIRE
+| RM-8 | Traduire logs et KDoc en anglais (CommitGeneratedReadmeTask.kt, AdocSourceFile.kt) | À FAIRE
+| RM-9 | Synchroniser version PlantUML dans README_truth*.adoc (1.2024.3 → version réelle) | À FAIRE
+| RM-10 | Nettoyer les références à readme-truth.yml dans la doc (remplacer par readme.yml) | À FAIRE
 |===
 
 '''
@@ -64,6 +71,7 @@ Publié : Gradle Plugin Portal (education.cccp.readme v0.0.0)
 
 |===
 | # | Date | Type | Sujet | Score
+| 002 | 2026-06-01 | code-review + governance | Code review complète + enregistrement borough CHIRAQ 🟤 (13ème borough) | 10/10
 | 001 | 2026-05-18 | migration | CCCP — namespace rename com.cheroliv → cccp.education (13 fichiers) | 10/10
 | 000 | 2026-05-12 | governance | Bootstrap gouvernance agent | 10/10
 |===
@@ -72,8 +80,18 @@ Publié : Gradle Plugin Portal (education.cccp.readme v0.0.0)
 == Portefeuille
 
 |===
-| Projet | Chemin | DAG | Sessions
-| plantuml-gradle | `foundry/public/plantuml-gradle/plantuml-plugin/` | N2 | 138+
-| magic-stick | `foundry/public/magic-stick/` | N2 | 69+
-| runner-gradle | `foundry/public/runner-gradle/` | N3 | 11+
+| Borough | Projet | DAG | Sessions
+| Newark 🔴 | training-gradle | N2 | 010
+| Manhattan | planner-gradle | N2 | 008
+| Brooklyn | codex-gradle | N2 | 018
+| Queens | codebase-gradle | N1 | 046
+| The Bronx | quizz-benchmark-gradle | N2 | 006
+| Staten Island | magic-stick | N2 | 004
+| New Jersey | runner-gradle | N3 | 011
+| Compton | waiter-gradle | N2 | 000
+| Brooklyn Tech | capsule-gradle | N2 | 000
+| South Central | workspace-gradle | N4 | 001
+| Long Island 🔵 | workspace-agent (IntelliJ) | N-IDE | 000
+| Watts 🟠 | hyperframes-gradle | N2 | 000
+| Chiraq 🟤 | readme-gradle | N2 | 002
 |===
