@@ -1,0 +1,33 @@
+= Session 004 — Mise à jour portefeuille cross-borough (18 boroughs)
+:author: cheroliv + deepseek-v4-pro
+:date: 2026-06-01
+:status: TERMINE
+
+== Contexte
+Session de gouvernance : mise à jour du portefeuille cross-borough dans INDEX.adoc suite à l'enregistrement des nouveaux boroughs N2/N4 dans AGENTS.adoc (workspace root).
+
+== Actions
+
+=== Portefeuille mis à jour
+Ajout de 5 nouveaux boroughs au portefeuille INDEX.adoc :
+
+[cols="2,3,2"]
+|===
+| Borough | Projet | DAG
+| New Orleans 🟢 | document-gradle | N2
+| Atlanta | agile-gradle | N4
+| Harlem | ticket-gradle | N4
+| Baltimore | review-gradle | N4
+| Oakland | flow-gradle | N4
+|===
+
+Correction : Détroit (capsule-gradle) déjà présent mais était manquant dans le portefeuille.
+
+=== Résultat
+Portefeuille passe de 13 à 18 boroughs. INDEX.adoc synchronisé avec AGENTS.adoc racine.
+
+== Fichiers modifiés
+- `.agents/INDEX.adoc` — section Portefeuille (ajout New Orleans, Atlanta, Harlem, Baltimore, Oakland + correction Détroit)
+
+== Prochaines sessions
+- EPICs RM-1, RM-3, RM-5→RM-10 en attente (voir roadmap INDEX.adoc)

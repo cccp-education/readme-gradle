@@ -1,0 +1,50 @@
+= Session 003 — Audit Complet Readme Plugin
+:author: cheroliv + deepseek-v4-pro
+:date: 2026-06-01
+:status: TERMINE
+
+== Contexte
+Session d'audit complet sur le readme-plugin (borough CHIRAQ 🟤).
+Inspirée du modèle BAKERY_AUDIT.adoc (bakery-gradle, session 022).
+
+== Actions
+* Audit complet : 9 fichiers source (1 022 lignes), 3 tests unitaires (201 lignes),
+  5 features Cucumber (831 lignes), 7 steps Cucumber (917 lignes),
+  1 test fonctionnel (128 lignes)
+* Audit gouvernance : INDEX.adoc, SESSIONS_HISTORY, TEST_COVERAGE_ANALYSIS,
+  SESSION_CHECKLIST, sessions archivées
+* Audit build : Gradle 9.5.1, Kotlin 2.3.20, Java 24, 31 deps dans libs.versions.toml
+* Audit CI/CD : 3 workflows GitHub Actions (195 lignes YAML)
+* Audit doc : README*.adoc (1 616 lignes), plugin_snapshot.adoc (2 913 lignes)
+* Création `AUDIT_README_PLUGIN.adoc` (racine readme-plugin/) — 350+ lignes
+
+== Problèmes identifiés
+* 🔴 CRITIQUE : Token GitHub potentiellement en clair dans readme.yml (signalé session 002)
+* 🔴 BLOQUANT : 10 EPICs RM-1→RM-10 « À FAIRE » sans BACKLOG.adoc dédié
+* 🟠 DOC : README_truth*.adoc non aligné sur noms de tâches EPIC K
+* 🟠 DOC : prompt.md obsolète toujours présent (RM-1 non fait)
+* 🟠 GOUVERNANCE : TEST_COVERAGE_ANALYSIS.adoc squelettique (12 lignes, pas de Kover)
+* 🟠 TECHNIQUE : node-gradle en implementation inutilisé (RM-7)
+* 🟡 ARCHITECTURE : 10 deps compileOnly (readme-ai, readme-utils) — usage non documenté
+* 🟡 ARCHITECTURE : ScaffoldTask à 294 lignes (28.8% du src) — trop concentré
+* 🟡 QUALITÉ : Ratio tests unitaires/source = 0.20x, pas de Kover
+* 🟢 MINEUR : Logs/KDoc en français, RM-8 à faire
+* 🟡 DOC : plugin_snapshot.adoc (2 913 lignes) non documenté dans INDEX
+
+== Décisions
+* BACKLOG.adoc doit être créé (pattern standard boroughs)
+* RM-1 (prompt.md → archives) : quick win prioritaire
+* RM-5 + RM-6 (doc README + prompt.md) : P1 immédiat
+* RM-7 (node-gradle) : P1, 10 minutes
+* RM-2 (tests graphify-gradle) : P2, 5 pts, à planifier
+* Kover à installer pour mesure de couverture (P1, 15 minutes)
+* AUDIT_README_PLUGIN.adoc à diluer dans BACKLOG.adoc + INDEX.adoc avant suppression
+
+== Livrables
+* `AUDIT_README_PLUGIN.adoc` — audit complet 350+ lignes
+* Mise à jour INDEX.adoc (session 003)
+* Mise à jour SESSIONS_HISTORY.adoc (session 003)
+* Mise à jour PROMPT_REPRISE.adoc (priorités session 004)
+
+== Score
+10/10 — Audit exhaustif, 11 anomalies documentées, priorités P0/P1/P2 claires.

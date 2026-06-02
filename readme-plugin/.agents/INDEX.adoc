@@ -9,6 +9,7 @@ _Ontologie spatiale_ : voir `configuration/.agents/AGENT_GOVERNANCE.adoc`
 _Création gouvernance_ : 2026-05-12 (Session 000 — Bootstrap)
 _Session terminee_ : 001 — Migration CCCP namespace (13 files)
 _Session terminee_ : 002 — Code review complète + enregistrement borough CHIRAQ
+_Session terminee_ : 003 — Audit complet (AUDIT_README_PLUGIN.adoc, 350+ lignes, 11 anomalies)
 
 '''
 == RÈGLES ABSOLUES (résumé)
@@ -71,6 +72,8 @@ Publié : Gradle Plugin Portal (education.cccp.readme v0.0.0)
 
 |===
 | # | Date | Type | Sujet | Score
+| 004 | 2026-06-01 | governance | Mise à jour portefeuille cross-borough (13→18 boroughs) | 10/10
+| 003 | 2026-06-01 | audit | Audit complet (AUDIT_README_PLUGIN.adoc, 350+ lignes, 11 anomalies) | 10/10
 | 002 | 2026-06-01 | code-review + governance | Code review complète + enregistrement borough CHIRAQ 🟤 (13ème borough) | 10/10
 | 001 | 2026-05-18 | migration | CCCP — namespace rename com.cheroliv → cccp.education (13 fichiers) | 10/10
 | 000 | 2026-05-12 | governance | Bootstrap gouvernance agent | 10/10
@@ -89,9 +92,14 @@ Publié : Gradle Plugin Portal (education.cccp.readme v0.0.0)
 | Staten Island | magic-stick | N2 | 004
 | New Jersey | runner-gradle | N3 | 011
 | Compton | waiter-gradle | N2 | 000
-| Brooklyn Tech | capsule-gradle | N2 | 000
+| Détroit | capsule-gradle | N2 | 000
 | South Central | workspace-gradle | N4 | 001
 | Long Island 🔵 | workspace-agent (IntelliJ) | N-IDE | 000
 | Watts 🟠 | hyperframes-gradle | N2 | 000
-| Chiraq 🟤 | readme-gradle | N2 | 002
+| Chiraq 🟤 | readme-gradle | N2 | 004
+| New Orleans 🟢 | document-gradle | N2 | 000
+| Atlanta | agile-gradle | N4 | 000
+| Harlem | ticket-gradle | N4 | 000
+| Baltimore | review-gradle | N4 | 000
+| Oakland | flow-gradle | N4 | 000
 |===
