@@ -3,4 +3,5 @@
 |===
 | Date | Session | EPIC/US | Description
 | 2026-06-01 | 002 | RM-0 | Code review complète (score 3.8/5) + enregistrement borough CHIRAQ 🟤 (13ème borough). Création session 002, mise à jour AGENTS.adoc, INDEX.adoc, SESSIONS_HISTORY.adoc, PROMPT_REPRISE.adoc. Roadmap enrichie de 6 nouveaux EPICs (RM-5 → RM-10). Ajout V20 dans GLOBAL_CODE_REVIEW.adoc (configuration/). Archivage et clôture session 002.
+| 2026-06-11 | 006 | Publication Maven Central 0.0.1 | nmcp, POM sans guard, bump codebase-contracts:0.0.2, buildscript resolutionStrategy annotations:26.0.2-1, settings nmcp. Publié avec succès.
 |===

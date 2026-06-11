@@ -2,6 +2,7 @@
 
 |===
 | # | Date | Type | Sujet | Score
+| 006 | 2026-06-11 | publish | Publication Maven Central 0.0.1 — bump codebase→0.0.2, buildscript resolutionStrategy annotations:26.0.2-1, POM sans guard, Sonatype→nmcp | 10/10
 | 004 | 2026-06-01 | governance | Mise à jour portefeuille cross-borough (13→18 boroughs) | 10/10
 | 003 | 2026-06-01 | audit | Audit complet (AUDIT_README_PLUGIN.adoc, 350+ lignes, 11 anomalies) | 10/10
 | 002 | 2026-06-01 | code-review + governance | Code review complète + enregistrement borough CHIRAQ 🟤 (13ème borough) | 10/10

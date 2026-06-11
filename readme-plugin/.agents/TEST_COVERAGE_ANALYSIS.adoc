@@ -10,3 +10,7 @@ _Statut_ : Tests existants (pré-gouvernance), couverture à auditer
 |===
 
 Couverture satisfaisante (unit + BDD + functional). À auditer en session 001.
+
+== Session 006 — Publication Maven Central (2026-06-11)
+
+Inchangé — aucun test modifié. Publication uniquement (build -x test).

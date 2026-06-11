@@ -10,6 +10,7 @@ _Création gouvernance_ : 2026-05-12 (Session 000 — Bootstrap)
 _Session terminee_ : 001 — Migration CCCP namespace (13 files)
 _Session terminee_ : 002 — Code review complète + enregistrement borough CHIRAQ
 _Session terminee_ : 003 — Audit complet (AUDIT_README_PLUGIN.adoc, 350+ lignes, 11 anomalies)
+_Session terminee_ : 006 — Publication Maven Central 0.0.1 ✅
 
 '''
 == RÈGLES ABSOLUES (résumé)
@@ -47,7 +48,7 @@ readme-gradle/                       # CONSUMER + REPO GIT
 |===
 
 Tests : Unit + Cucumber BDD + Functional ✅
-Publié : Gradle Plugin Portal (education.cccp.readme v0.0.0)
+Publié : Maven Central (education.cccp:readme-plugin v0.0.1)
 
 '''
 == Roadmap
@@ -65,6 +66,7 @@ Publié : Gradle Plugin Portal (education.cccp.readme v0.0.0)
 | RM-8 | Traduire logs et KDoc en anglais (CommitGeneratedReadmeTask.kt, AdocSourceFile.kt) | À FAIRE
 | RM-9 | Synchroniser version PlantUML dans README_truth*.adoc (1.2024.3 → version réelle) | À FAIRE
 | RM-10 | Nettoyer les références à readme-truth.yml dans la doc (remplacer par readme.yml) | À FAIRE
+| Publication Maven Central 0.0.1 | nmcp, POM sans guard, codebase-contracts:0.0.2, buildscript resolutionStrategy, settings nmcp | ✅ 2026-06-11
 |===
 
 '''
@@ -72,6 +74,7 @@ Publié : Gradle Plugin Portal (education.cccp.readme v0.0.0)
 
 |===
 | # | Date | Type | Sujet | Score
+| 006 | 2026-06-11 | publish | Publication Maven Central 0.0.1 — bump codebase→0.0.2, buildscript resolutionStrategy annotations:26.0.2-1, POM sans guard, Sonatype→nmcp | 10/10
 | 004 | 2026-06-01 | governance | Mise à jour portefeuille cross-borough (13→18 boroughs) | 10/10
 | 003 | 2026-06-01 | audit | Audit complet (AUDIT_README_PLUGIN.adoc, 350+ lignes, 11 anomalies) | 10/10
 | 002 | 2026-06-01 | code-review + governance | Code review complète + enregistrement borough CHIRAQ 🟤 (13ème borough) | 10/10
@@ -85,7 +88,7 @@ Publié : Gradle Plugin Portal (education.cccp.readme v0.0.0)
 |===
 | Borough | Projet | DAG | Sessions
 | Newark 🔴 | training-gradle | N2 | 010
-| Manhattan | planner-gradle | N2 | 008
+| Manhattan | planner-gradle | N2 | 051
 | Brooklyn | codex-gradle | N2 | 018
 | Queens | codebase-gradle | N1 | 046
 | The Bronx | quizz-benchmark-gradle | N2 | 006
@@ -96,7 +99,7 @@ Publié : Gradle Plugin Portal (education.cccp.readme v0.0.0)
 | South Central | workspace-gradle | N4 | 001
 | Long Island 🔵 | workspace-agent (IntelliJ) | N-IDE | 000
 | Watts 🟠 | hyperframes-gradle | N2 | 000
-| Chiraq 🟤 | readme-gradle | N2 | 004
+| Chiraq 🟤 | readme-gradle | N2 | 006
 | New Orleans 🟢 | document-gradle | N2 | 000
 | Atlanta | agile-gradle | N4 | 000
 | Harlem | ticket-gradle | N4 | 000

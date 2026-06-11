@@ -27,7 +27,7 @@ langchain4j-beta = "1.14.1-beta24"
 docker-java = "3.7.0"
 testcontainers-pg = "1.21.4"
 logback = "1.5.32"
-codebase = "0.0.1"
+codebase = "0.0.2"
 
 [libraries]
 plantuml = { module = "net.sourceforge.plantuml:plantuml", version.ref = "plantuml" }

@@ -1,0 +1,30 @@
+= Session 006 — Publication Maven Central 0.0.1
+:date: 2026-06-11
+:borough: Chiraq
+:plugin: readme-gradle
+:status: TERMINEE
+
+== Objectif
+
+Publication de readme-gradle sur Maven Central via nmcp.
+
+== Blocage initial
+
+Dépendance `codebase-contracts` tirait transitivement `codex-plugin` en SNAPSHOT via annotations.
+Conflit de résolution Gradle bloquant le build.
+
+== Résolution
+
+1. Bump `codebase-contracts:0.0.1` → `codebase-contracts:0.0.2` (déjà publié sur Central)
+2. Ajout `buildscript { resolutionStrategy { force("org.jetbrains:annotations:26.0.2-1") } }` pour éliminer le conflit annotations
+3. POM : suppression du guard `if(name=="pluginMaven")` — `withType<MavenPublication>` appliqué à toutes les publications
+4. `Sonatype` → `nmcp` (repositories et plugin)
+5. `settings.gradle.kts` : ajout `com.gradleup.nmcp.settings` version `1.5.0` + bloc `nmcpSettings { centralPortal { ... publishingType = "AUTOMATIC" } }`
+
+== Résultat
+
+Publié avec succès sur Maven Central (education.cccp:readme-plugin:0.0.1) après disponibilité de codebase-contracts:0.0.2 sur Central.
+
+== Score
+
+10/10
