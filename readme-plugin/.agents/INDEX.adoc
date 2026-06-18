@@ -105,4 +105,12 @@ Publié : Maven Central (education.cccp:readme-plugin v0.0.1)
 | Harlem | ticket-gradle | N4 | 000
 | Baltimore | review-gradle | N4 | 000
 | Oakland | flow-gradle | N4 | 000
+| Philly | jhipster-gradle-plugins | N2 | 005
+| Bushwick 🟤 | bakery-gradle | N2 | 062
+| MIAMI 🌴 | slider-gradle | N2 | 007
+| MEMPHIS 🎸 | workspace-bom | N0 | 13 commits
+| HTOWN 🚀 | plantuml-gradle | N2 | 145
+| Grand Central 🟡 | graphify-gradle | N0 | 011
+| Liberty 🗽 | api-key-pool-gradle | N0 | 002
+| ALGER 🟡 | dashboard-gradle | N3 | 000
 |===
