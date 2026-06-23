@@ -11,6 +11,7 @@ _Session terminee_ : 001 — Migration CCCP namespace (13 files)
 _Session terminee_ : 002 — Code review complète + enregistrement borough CHIRAQ
 _Session terminee_ : 003 — Audit complet (AUDIT_README_PLUGIN.adoc, 350+ lignes, 11 anomalies)
 _Session terminee_ : 006 — Publication Maven Central 0.0.1 ✅
+_Session terminee_ : 007 — README i18n (20 fichiers, 10 langues, switcher, badges 0.0.1, RTL AR/UR) ✅
 
 '''
 == RÈGLES ABSOLUES (résumé)
@@ -59,7 +60,7 @@ Publié : Maven Central (education.cccp:readme-plugin v0.0.1)
 | RM-1 | Migrer prompt.md → archives gouvernance (LAZY) | À FAIRE
 | RM-2 | Tests integration avec graphify-gradle | À FAIRE
 | RM-3 | Release v1.0.0 Plugin Portal | À FAIRE
-| RM-4 | Support multi-langue automatique | À FAIRE
+| RM-4 | Support multi-langue — base i18n livrée (20 README × 10 langues, session 007), automatisation dogfooding restante | 🟡 base ✅ / auto À FAIRE
 | RM-5 | Aligner README_truth*.adoc sur les noms de tâches actuels (generateReadme, transformReadme, commitGeneratedReadme) — remplacer les occurences de processReadme et scaffoldReadme | À FAIRE
 | RM-6 | Nettoyer prompt.md (obsolète — référence com.cheroliv, anciens noms de tâches) | À FAIRE
 | RM-7 | Supprimer ou repasser en compileOnly la dépendance node-gradle (implémentation inutilisée) | À FAIRE
@@ -74,6 +75,7 @@ Publié : Maven Central (education.cccp:readme-plugin v0.0.1)
 
 |===
 | # | Date | Type | Sujet | Score
+| 007 | 2026-06-24 | i18n | README i18n — 20 fichiers (10 langues × consommateur + plugin), switcher, badges 0.0.1, RTL AR/UR, `<YOUR_GITHUB_PAT>` préservé | 9/10
 | 006 | 2026-06-11 | publish | Publication Maven Central 0.0.1 — bump codebase→0.0.2, buildscript resolutionStrategy annotations:26.0.2-1, POM sans guard, Sonatype→nmcp | 10/10
 | 004 | 2026-06-01 | governance | Mise à jour portefeuille cross-borough (13→18 boroughs) | 10/10
 | 003 | 2026-06-01 | audit | Audit complet (AUDIT_README_PLUGIN.adoc, 350+ lignes, 11 anomalies) | 10/10

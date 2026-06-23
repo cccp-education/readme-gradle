@@ -1,10 +1,10 @@
 = Backlog — Chiraq (readme-gradle)
-:description: Backlog de publication Maven Central — EPIC PUB
-:date: 2026-06-08
+:description: Backlog readme-gradle — EPICs RM + PUB
+:date: 2026-06-24
 :toc: left
 :sectnums:
 
-_Source : configuration/EPIC_PUB.adoc (Session 096)_
+_Source : configuration/EPIC_PUB.adoc (Session 096) + roadmap INDEX.adoc_
 
 '''
 == EPIC PUB — Publication Maven Central
@@ -48,3 +48,29 @@ Par :
 | Artefact | URL |
 |---|---|
 | readme-plugin | https://central.sonatype.com/artifact/education.cccp/readme-plugin |
+
+'''
+== EPIC RM-4 — Support multi-langue i18n
+
+=== RM-4a — Base i18n livrée (session 007) ✅
+
+20 fichiers README générés (10 langues × consommateur + plugin) :
+- `README.consommateurs/` (10) : en/zh/hi/es/fr/ar/bn/pt/ru/ur
+- `README.plugin/` (10) : variantes développeur (architecture, modules, tests)
+- Switcher i18n en bas d'en-tête de chaque fichier
+- Badges shields.io alignés sur version 0.0.1
+- Marqueur `<!-- translated from README.md rev 0.0.1 -->` sur chaque traduction
+- AR et UR en RTL natif (rendu Unicode GitHub, pas de `dir="rtl"`)
+- Placeholder `<YOUR_GITHUB_PAT>` préservé (sentinel du plugin)
+
+=== RM-4b — Automatisation dogfooding À FAIRE
+
+Génération *automatique* des traductions par le plugin lui-même :
+- Tâche Gradle `translateReadme` (ou similaire) depuis `README.md` master
+- Intégration LLM (LangChain4j) pour traduction assistée
+- Régénération synchronisée à chaque release
+- Validation cohérence badges/switcher/marqueurs
+
+**Priorite** : P2
+**Estimation** : 5 pts
+**Dependances** : RM-4a ✅, i18n-contracts N0 (MEMPHIS MEM-3)

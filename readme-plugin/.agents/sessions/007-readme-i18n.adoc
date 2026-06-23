@@ -1,0 +1,168 @@
+= Session 007 — README i18n (20 fichiers, 10 langues)
+:date: 2026-06-24
+:borough: Chiraq
+:plugin: readme-gradle
+:status: TERMINEE
+
+== Objectif
+
+Génération multilingue des README consommateur et plugin pour readme-gradle :
+10 langues × 2 variantes = 20 fichiers Markdown dans deux répertoires dédiés.
+
+== Périmètre
+
+. `README.consommateurs/` — README destiné aux *utilisateurs* du plugin (API, tasks, config, quickstart).
+. `README.plugin/` — README destiné aux *développeurs/contributeurs* du plugin (architecture interne, modules Kotlin, tests, pipeline CI).
+
+Les deux répertoires vivent à la racine du repo (`foundry/public/readme-gradle/`), hors de `readme-plugin/`, pour séparer la documentation publique de la racine de travail.
+
+== Langues couvertes (10)
+
+|===
+| Code | Langue | Script | Direction
+
+| `en` (default) | English | Latin | LTR
+| `zh` | 中文 (Chinese) | Han | LTR
+| `hi` | हिन्दी (Hindi) | Devanagari | LTR
+| `es` | Español | Latin | LTR
+| `fr` | Français | Latin | LTR
+| `ar` | العربية (Arabic) | Arabic | *RTL*
+| `bn` | বাংলা (Bengali) | Bengali | LTR
+| `pt` | Português | Latin | LTR
+| `ru` | Русский (Russian) | Cyrillic | LTR
+| `ur` | اردو (Urdu) | Arabic | *RTL*
+|===
+
+AR et UR sont les deux langues RTL de l'ensemble. Le contenu est rédigé dans le sens naturel de chaque langue (texte RTL pour AR/UR, badges/URLs/shields.io conservés en LTR car URLs invariantes).
+
+== Marqueurs et conventions
+
+=== En-tête de traduction
+
+Chaque fichier de traduction porte un commentaire HTML en première ligne :
+[source]
+----
+<!-- translated from README.md rev 0.0.1 -->
+----
+
+Le fichier `README.md` (anglais) de chaque répertoire est marqué comme *master source* :
+[source]
+----
+<!-- master source — other languages are translations of this file -->
+----
+
+=== Badges shields.io (version 0.0.1)
+
+Tous les fichiers (consommateur + plugin, les 10 langues) portent les 4 badges alignés sur la version hardcodée `0.0.1` :
+
+. `[![Maven Central](.../education.cccp/readme-plugin.svg?label=Maven%20Central)]` → https://central.sonatype.com/artifact/education.cccp/readme-plugin
+. `[![Gradle Plugin Portal](.../education.cccp.readme.svg?label=Plugin%20Portal)]` → https://plugins.gradle.org/plugin/education.cccp.readme
+. `[![CI](.../cccp-education/readme-gradle/actions/workflow/status/.../ci.yml?branch=main&label=CI)]`
+. `[![License](.../cccp-education/readme-gradle?label=License)]` → `../LICENCE`
+
+Ligne de métadonnées commune :
+[source]
+----
+- **Version**: `0.0.1` · **Group**: `education.cccp` · **Plugin ID**: `education.cccp.readme`
+----
+
+=== Switcher i18n (footer de langue)
+
+Chaque fichier contient une ligne de navigation inter-langue :
+[source]
+----
+🌐 Languages: [English](README.md) | [中文](README.zh.md) | [हिन्दी](README.hi.md) | [Español](README.es.md) | [Français](README.fr.md) | [العربية](README.ar.md) | [বাংলা](README.bn.md) | [Português](README.pt.md) | [Русский](README.ru.md) | [اردو](README.ur.md)
+----
+
+La langue courante est affichée en **gras** (Markdown `**...**`) plutôt qu'en lien, pour signaler la page active.
+
+=== Placeholder `<YOUR_GITHUB_PAT>` préservé
+
+Le placeholder `<YOUR_GITHUB_PAT>` apparaît dans les exemples de configuration YAML du README consommateur (section authentification Git/token). Il est *intact* dans les 10 fichiers de `README.consommateurs/` — aucune valeur réelle n'a été injectée. C'est cohérent avec :
+
+. `readme-plugin/src/main/kotlin/readme/ReadmePlantUmlConfig.kt:73` — `token.takeIf { it.isNotBlank() && it != "<YOUR_GITHUB_PAT>" }`
+. `readme-plugin/src/main/kotlin/readme/JGitRemoteValidator.kt:19` — guard `config.token == "<YOUR_GITHUB_PAT>"`
+. `readme-plugin/src/main/kotlin/readme/ScaffoldTask.kt:154` — message `"replace <YOUR_GITHUB_PAT> with a real token"`
+. Les features Cucumber (`2_scaffold.feature`, `3_process.feature`, `4_commit.feature`)
+. Le test fonctionnel `ReadmeGradlePluginFunctionalTests.kt:39`
+
+Le placeholder est le *sentinel* officiel du plugin pour distinguer "non configuré" de "configuré vide". À préserver lors de toute future évolution des README.
+
+== Fichiers créés
+
+=== `README.consommateurs/` (10 fichiers, ~73 Ko total)
+
+|===
+| Fichier | Taille (octets)
+
+| `README.md`      | 6496
+| `README.fr.md`   | 6784
+| `README.es.md`   | 7087
+| `README.pt.md`   | 6981
+| `README.zh.md`   | 6626
+| `README.hi.md`   | 10178
+| `README.bn.md`   | 10032
+| `README.ar.md`   | 7799
+| `README.ur.md`   | 8135
+| `README.ru.md`   | 8748
+|===
+
+=== `README.plugin/` (10 fichiers, ~134 Ko total)
+
+|===
+| Fichier | Taille (octets)
+
+| `README.md`      | 11430
+| `README.fr.md`   | 11886
+| `README.es.md`   | 12117
+| `README.pt.md`   | 12071
+| `README.zh.md`   | 11439
+| `README.hi.md`   | 16617
+| `README.bn.md`   | 16562
+| `README.ar.md`   | 13122
+| `README.ur.md`   | 13635
+| `README.ru.md`   | 14724
+|===
+
+Les fichiers `README.plugin/` sont ~2× plus volumineux que `README.consommateurs/` car ils documentent l'architecture interne (modules Kotlin, tests, pipeline CI, conventions de contribution) en plus de l'API publique.
+
+Total : 20 fichiers, ~207 Ko.
+
+== Décisions techniques
+
+. *Master source unique* : `README.md` (anglais) de chaque répertoire est la source de vérité. Les 9 autres fichiers sont déclarés traductions via le commentaire `<!-- translated from README.md rev 0.0.1 -->`. Toute évolution future doit partir de l'anglais.
+. *Version figée à `0.0.1`* : les badges, la ligne de métadonnées et le marqueur `rev 0.0.1` référencent la version actuellement publiée sur Maven Central. À bumper synchroniquement lors d'une future release (RM-3 / v1.0.0).
+. *Langues RTL sans balise `dir`* : pas de HTML `<div dir="rtl">` injecté. Le rendu Markdown GitHub gère nativement le sens des caractères Unicode (Arabic, Nastaliq). Les URLs/badges restent LTR car ce sont des URLs invariantes.
+. *Switcher en bas d'en-tête* : la ligne `🌐 Languages: ...` est placée juste sous les badges/métadonnées, avant le premier `---`, pour visibilité immédiate sans alourdir le sommaire.
+. *Pas de section "Translations" séparée* : chaque fichier est autonome, aucun index central des traductions. Le switcher fait office d'index.
+
+== Sécurité
+
+. Aucun token/PAT réel injecté — `<YOUR_GITHUB_PAT>` préservé partout (vérifié par `grep -rn "YOUR_GITHUB_PAT"` sur les 20 fichiers).
+. Aucune clé API, mot de passe, ou secret dans les 20 fichiers.
+. Badges shields.io : URLs publiques uniquement (Maven Central, Plugin Portal, GitHub Actions, License).
+
+== Lien avec le backlog
+
+. **RM-4** (Support multi-langue automatique) : cette session pose la *base matérielle* (20 fichiers README traduits). Le *côté automatique* (génération depuis une source unique via le plugin lui-même — dogfooding) reste à coder dans une session ultérieure. Statut RM-4 : base livrée, automatisation à faire.
+. **RM-9** (Synchroniser version PlantUML) : non touché ici — les badges pointent sur la version *plugin* (`0.0.1`), pas sur PlantUML. À traiter séparément.
+
+== Ce qui reste hors périmètre
+
+. Génération *automatique* des traductions par le plugin lui-même (dogfooding — tâche Gradle `translateReadme` ou similaire). Actuellement les 20 fichiers sont des livrables statiques.
+. Vérification orthographique/grammaticale des traductions (native speakers non sollicités).
+. Tests Playwright de rendu RTL sur GitHub (les README Markdown sont rendus par GitHub, pas par une app web).
+
+== Score
+
+9/10
+
+*Justification* : 20 fichiers livrés, structure cohérente, placeholders sécurisés, switcher fonctionnel, RTL géré. -1 car RM-4 reste partiel (automatisation non livrée — base manuelle seulement).
+
+== Fichiers de gouvernance modifiés (procédure 6 étapes)
+
+. `.agents/sessions/007-readme-i18n.adoc` — ce rapport (création)
+. `.agents/INDEX.adoc` — MAJ roadmap (RM-4 base), session 007 ajoutée
+. `.agents/SESSIONS_HISTORY.adoc` — entrée 007 ajoutée
+. `PROMPT_REPRISE.adoc` — MAJ contexte reprise session 008
+. `BACKLOG.adoc` — RM-4 statut affiné (base livrée, automatisation restante)
