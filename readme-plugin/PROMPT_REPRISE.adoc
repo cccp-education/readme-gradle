@@ -1,16 +1,14 @@
-= PROMPT_REPRISE — Chiraq (readme-plugin)
+= PROMPT_REPRISE — Chiraq (readme-plugin) — Session 009
 :date: 2026-06-24
-:session: 007
-:status: TERMINEE
+:session: 009
 
-== Session 007 terminée — README i18n (20 fichiers, 10 langues)
+== Session 008 terminée — Architecture README Plugin + Consommateur
 
-20 README générés : `README.consommateurs/` (10) + `README.plugin/` (10).
-10 langues : en/zh/hi/es/fr/ar/bn/pt/ru/ur. AR et UR en RTL natif.
-Switcher i18n en bas d'en-tête, badges shields.io version 0.0.1, marqueur `rev 0.0.1`.
-Placeholder `<YOUR_GITHUB_PAT>` préservé partout (sentinel du plugin).
+Déplacement README.plugin → readme-plugin/README.plugin/ (README.md master
+remonté à racine plugin). Déplacement README.consommateurs → racine borough.
+Liens i18n recréés (10 langues).
 
-== Prochaine session — 008 : backlog i18n + dette
+== Prochaine session — 009 : backlog i18n + dette
 
 - RM-4 auto : Génération *automatique* des traductions par le plugin lui-même (dogfooding — tâche `translateReadme` depuis `README.md` master)
 - RM-1 : Migrer `prompt.md` → archives gouvernance (LAZY)

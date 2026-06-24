@@ -12,6 +12,7 @@ _Session terminee_ : 002 — Code review complète + enregistrement borough CHIR
 _Session terminee_ : 003 — Audit complet (AUDIT_README_PLUGIN.adoc, 350+ lignes, 11 anomalies)
 _Session terminee_ : 006 — Publication Maven Central 0.0.1 ✅
 _Session terminee_ : 007 — README i18n (20 fichiers, 10 langues, switcher, badges 0.0.1, RTL AR/UR) ✅
+_Session terminee_ : 008 — Architecture README Plugin + Consommateur (déplacement README.plugin → readme-plugin/, README.consommateurs → racine, liens i18n recréés) ✅
 
 '''
 == RÈGLES ABSOLUES (résumé)
