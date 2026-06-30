@@ -429,7 +429,7 @@ la gouvernance (pas dans `.agents/`).
 [cols="2,3"]
 |===
 | Document | `AUDIT_README_PLUGIN.adoc`
-| Créé | 2026-06-01 — Session deepseek-v4-pro
+| Créé | 2026-06-01 — Session gpt-oss:120b-cloud
 | Classification | VISION — audit factuel basé sur lecture du code source et gouvernance
 | Type | STIMULUS Cercle 4
 | Dilution cible | `.agents/INDEX.adoc` (roadmap), `.agents/BACKLOG.adoc` (à créer)
@@ -438,4 +438,4 @@ la gouvernance (pas dans `.agents/`).
 |===
 
 [.text-right]
-*Document généré le 1er juin 2026. Audité par deepseek-v4-pro sur 3 sessions, 153 commits, 2 268 lignes de code.*
+*Document généré le 1er juin 2026. Audité par gpt-oss:120b-cloud sur 3 sessions, 153 commits, 2 268 lignes de code.*
