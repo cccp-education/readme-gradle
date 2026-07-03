@@ -1,14 +1,17 @@
-= PROMPT_REPRISE — Chiraq (readme-plugin) — Session 009
-:date: 2026-06-24
-:session: 009
+= PROMPT_REPRISE — Chiraq (readme-plugin) — Session 010
+:date: 2026-07-03
+:session: 010
 
-== Session 008 terminée — Architecture README Plugin + Consommateur
+== Session 009 terminée — CNV-6 Migration conventions plugins
 
-Déplacement README.plugin → readme-plugin/README.plugin/ (README.md master
-remonté à racine plugin). Déplacement README.consommateurs → racine borough.
-Liens i18n recréés (10 langues).
+Migration du `build.gradle.kts` vers les convention plugins
+`education.cccp.build.gradle-plugin` (0.0.1) + `education.cccp.build.publishing`
+(0.0.1), pattern bakery. build.gradle.kts 270→224 lignes (-46). compileKotlin
+SUCCESS. Variantes gardées : extendsFrom legacy, exclusions logback, filter scenarios.
 
-== Prochaine session — 009 : backlog i18n + dette
+CNV-6 ✅ TERMINÉ pour readme-gradle.
+
+== Prochaine session — 010 : backlog i18n + dette
 
 - RM-4 auto : Génération *automatique* des traductions par le plugin lui-même (dogfooding — tâche `translateReadme` depuis `README.md` master)
 - RM-1 : Migrer `prompt.md` → archives gouvernance (LAZY)

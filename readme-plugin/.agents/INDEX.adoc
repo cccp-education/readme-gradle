@@ -13,6 +13,10 @@ _Session terminee_ : 003 — Audit complet (AUDIT_README_PLUGIN.adoc, 350+ ligne
 _Session terminee_ : 006 — Publication Maven Central 0.0.1 ✅
 _Session terminee_ : 007 — README i18n (20 fichiers, 10 langues, switcher, badges 0.0.1, RTL AR/UR) ✅
 _Session terminee_ : 008 — Architecture README Plugin + Consommateur (déplacement README.plugin → readme-plugin/, README.consommateurs → racine, liens i18n recréés) ✅
+_Session terminee_ : 009 — CNV-6 Migration conventions plugins education.cccp.build.* v0.0.1 ✅
+
+_Dernière mise à jour_ : 2026-07-03 (Session 009 CNV-6 Migration)
+_Prochaine session_ : 010 — Backlog i18n + dette (RM-1/5/6/7/8/9/10)
 
 '''
 == RÈGLES ABSOLUES (résumé)
@@ -68,6 +72,7 @@ Publié : Maven Central (education.cccp:readme-plugin v0.0.1)
 | RM-8 | Traduire logs et KDoc en anglais (CommitGeneratedReadmeTask.kt, AdocSourceFile.kt) | À FAIRE
 | RM-9 | Synchroniser version PlantUML dans README_truth*.adoc (1.2024.3 → version réelle) | À FAIRE
 | RM-10 | Nettoyer les références à readme-truth.yml dans la doc (remplacer par readme.yml) | À FAIRE
+| CNV-6 | Migration conventions plugins education.cccp.build.* v0.0.1 (gradle-plugin + publishing) | ✅ 2026-07-03
 | Publication Maven Central 0.0.1 | nmcp, POM sans guard, codebase-contracts:0.0.2, buildscript resolutionStrategy, settings nmcp | ✅ 2026-06-11
 |===
 
@@ -76,6 +81,8 @@ Publié : Maven Central (education.cccp:readme-plugin v0.0.1)
 
 |===
 | # | Date | Type | Sujet | Score
+| 009 | 2026-07-03 | dev | CNV-6 Migration — convention plugins education.cccp.build.* v0.0.1 appliquées (gradle-plugin + publishing), build.gradle.kts 270→224 (-46), compileKotlin SUCCESS. Variantes gardées : extendsFrom legacy, exclusions logback, filter scenarios | ✅ TERMINÉ
+| 008 | 2026-06-24 | refactor README | Architecture README Plugin + Consommateur — déplacement README.plugin → readme-plugin/, README.consommateurs → racine, liens i18n recréés (10 langues) | 8/10
 | 007 | 2026-06-24 | i18n | README i18n — 20 fichiers (10 langues × consommateur + plugin), switcher, badges 0.0.1, RTL AR/UR, `<YOUR_GITHUB_PAT>` préservé | 9/10
 | 006 | 2026-06-11 | publish | Publication Maven Central 0.0.1 — bump codebase→0.0.2, buildscript resolutionStrategy annotations:26.0.2-1, POM sans guard, Sonatype→nmcp | 10/10
 | 004 | 2026-06-01 | governance | Mise à jour portefeuille cross-borough (13→18 boroughs) | 10/10

@@ -1,7 +1,12 @@
 = Sessions History — Readme Plugin
 
+== Session 009 (2026-07-03) — CNV-6 Migration
+
+Migration du `build.gradle.kts` vers les convention plugins `education.cccp.build.gradle-plugin` (0.0.1) + `education.cccp.build.publishing` (0.0.1), pattern bakery. build.gradle.kts 270→224 lignes (-46). compileKotlin SUCCESS. Variantes gardées : extendsFrom legacy, exclusions logback, filter scenarios.
+
 |===
 | # | Date | Type | Sujet | Score
+| 009 | 2026-07-03 | dev | CNV-6 Migration — convention plugins education.cccp.build.* v0.0.1 (gradle-plugin + publishing), build.gradle.kts 270→224 (-46), compileKotlin SUCCESS. Variantes : extendsFrom legacy, exclusions logback, filter scenarios | ✅ TERMINÉ
 | 008 | 2026-06-24 | refactor README | Architecture README Plugin + Consommateur — déplacement README.plugin → readme-plugin/, README.consommateurs → racine, liens i18n recréés (10 langues) | 8/10
 | 007 | 2026-06-24 | i18n | README i18n — 20 fichiers (10 langues × consommateur + plugin), switcher, badges 0.0.1, RTL AR/UR, `<YOUR_GITHUB_PAT>` préservé | 9/10
 | 006 | 2026-06-11 | publish | Publication Maven Central 0.0.1 — bump codebase→0.0.2, buildscript resolutionStrategy annotations:26.0.2-1, POM sans guard, Sonatype→nmcp | 10/10

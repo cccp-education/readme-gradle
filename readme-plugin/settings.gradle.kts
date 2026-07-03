@@ -2,9 +2,9 @@
 
 pluginManagement {
     repositories {
+        mavenLocal()
         mavenCentral()
         gradlePluginPortal()
-        mavenLocal()
     }
 }
 
@@ -28,8 +28,8 @@ nmcpSettings {
 
 dependencyResolutionManagement {
     repositories {
-        mavenCentral()
         mavenLocal()
+        mavenCentral()
     }
 }
 

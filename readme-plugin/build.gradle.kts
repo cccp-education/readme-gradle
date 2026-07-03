@@ -1,4 +1,3 @@
-import org.gradle.api.JavaVersion.VERSION_24
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 
 buildscript {
@@ -14,18 +13,18 @@ buildscript {
 }
 
 plugins {
-    signing
-    `java-library`
-    `maven-publish`
-    `java-gradle-plugin`
-    alias(libs.plugins.kotlin.jvm)
+    id("education.cccp.build.gradle-plugin") version "0.0.1"
+    id("education.cccp.build.publishing") version "0.0.1"
     alias(libs.plugins.publish)
     alias(libs.plugins.codebase)
 }
 
 group = "education.cccp"
 version = libs.plugins.readme.get().version
-kotlin.jvmToolchain(VERSION_24.ordinal)
+
+publishingConventions {
+    publicationType = "PLUGIN"
+}
 
 repositories {
     mavenCentral()
@@ -212,59 +211,15 @@ gradlePlugin {
     }
 }
 
-java {
-    withJavadocJar()
-    withSourcesJar()
-}
-
 publishing {
     publications {
         withType<MavenPublication> {
-            pom {
-                name.set(gradlePlugin.plugins.getByName("readme").displayName)
-                description.set(gradlePlugin.plugins.getByName("readme").description)
-                url.set(gradlePlugin.website.get())
-                licenses {
-                    license {
-                        name.set("The Apache License, Version 2.0")
-                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
-                    }
-                }
-                developers {
-                    developer {
-                        id.set("cccp-education")
-                        name.set("CCCP Education")
-                        email.set("cccp.edu@gmail.com")
-                    }
-                }
-                scm {
-                    connection.set(gradlePlugin.vcsUrl.get())
-                    developerConnection.set(gradlePlugin.vcsUrl.get())
-                    url.set(gradlePlugin.vcsUrl.get())
-                }
-                project.findProperty("relocationGroup")?.let { targetGroup ->
-                    withXml {
-                        val pom = asElement()
-                        val doc = pom.ownerDocument
-                        val distMgmt = doc.createElement("distributionManagement")
-                        val relocation = doc.createElement("relocation")
-                        relocation.appendChild(doc.createElement("groupId")).also { it.textContent = targetGroup.toString() }
-                        relocation.appendChild(doc.createElement("artifactId")).also { it.textContent = project.name }
-                        distMgmt.appendChild(relocation)
-                        pom.appendChild(distMgmt)
-                    }
+            if (name == "pluginMaven") {
+                pom {
+                    name.set(gradlePlugin.plugins.getByName("readme").displayName)
+                    description.set(gradlePlugin.plugins.getByName("readme").description)
                 }
             }
         }
     }
-    repositories {
-        mavenCentral()
-    }
-}
-
-signing {
-    if (System.getenv("CI") != "true" && !version.toString().endsWith("-SNAPSHOT")) {
-        sign(publishing.publications)
-    }
-    useGpgCmd()
 }
