@@ -141,6 +141,19 @@ readme-gradle/                       # CONSUMER + REPO GIT
 * **CommitGeneratedReadmeTask** : JGit commit/push en CI
 * **Cucumber** : 7 scénarios BDD (Minimal, Scaffold, Process, Commit, Integration)
 
+=== Conventions Plugins (ABIDJAN N0)
+
+Readme consomme les convention plugins centralises `education.cccp.build` v0.0.3 :
+
+[cols="2,5"]
+|===
+| Plugin ID | Role
+| `education.cccp.build.gradle-plugin` | java-gradle-plugin + kotlin-jvm + test JUnit + withSourcesJar/JavadocJar + mavenLocal + deps junit test
+| `education.cccp.build.publishing` | POM Maven Central + signing conditionnel + relocation + publicationType
+|===
+
+Ces 2 plugins remplacent ~46 lignes de build redondantes (POM, signing, toolchain, testLogging).
+
 === Commandes Utiles
 
 [source,shell]
