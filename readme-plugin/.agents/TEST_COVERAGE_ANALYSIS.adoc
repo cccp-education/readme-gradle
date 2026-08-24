@@ -14,3 +14,9 @@ Couverture satisfaisante (unit + BDD + functional). À auditer en session 001.
 == Session 006 — Publication Maven Central (2026-06-11)
 
 Inchangé — aucun test modifié. Publication uniquement (build -x test).
+== Session 011 — RM-12-1 cleanup dépendances (2026-08-24)
+
+Inchangé — aucun test modifié (cleanup build scripts uniquement).
+Gate non-régression exécutée : `./gradlew check` VERT — 80 tests
+(unit + cucumber + functional), 1 skipped, 0 failures. Baseline S-010
+préservée après bump codebase 0.0.2→0.0.8.

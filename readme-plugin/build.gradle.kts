@@ -40,11 +40,7 @@ dependencies {
     implementation(libs.bundles.readme)
     implementation(libs.bundles.jgit)
 
-    compileOnly(libs.bundles.readme.ai)
     compileOnly(libs.bundles.readme.utils)
-
-    //TODO: readme to html and serve
-    implementation(libs.node.gradle)
 
     // Unit test dependencies
     testImplementation(kotlin("test-junit5"))

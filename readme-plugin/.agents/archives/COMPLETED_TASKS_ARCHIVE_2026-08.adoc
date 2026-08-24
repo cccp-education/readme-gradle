@@ -1,0 +1,26 @@
+= Archives — Tâches Terminées Août 2026
+
+== Session 010 (2026-08-24) — Cadrage EPIC RM-12 + RM-4b ✅
+
+Gouvernance pure, zéro code. Audit 8 constats, 11 décisions, 7 US ~17 pts.
+Doc `CADRAGE_EPIC_RM_I18N.adoc` créé. Pattern S-057/S-063.
+
+== Session 011 (2026-08-24) — RM-12-1 cleanup dépendances ✅
+
+US-1 EPIC RM-12 exécutée :
+
+* Déblocage baseline : bump `codebase = "0.0.2"` → `"0.0.8"` dans
+  `gradle/libs.versions.toml` (conflit kotlin-stdlib strictly 2.3.21
+  wrapper Gradle 9.6.1 vs 2.3.10 transitif codebase 0.0.2 ; alignement
+  slider/capsule qui consomment déjà 0.0.8).
+* Suppression `compileOnly(libs.bundles.readme.ai)` (6 modules
+  langchain4j caducs) + `implementation(libs.node.gradle)` +
+  commentaire TODO mort dans `build.gradle.kts`.
+* Vérification préalable : zéro référence `langchain4j`/`node.gradle`
+  dans `src/`.
+* Entrées catalogue `node-gradle`/`langchain4j-*` conservées volontairement
+  (purge définitive différée à RM-12-3, diff US-1 minimal).
+* Gate : `./gradlew check` VERT — 80 tests, 1 skipped, 0 failures.
+* Zéro fichier production modifié, zéro secret, zéro bump BOM.
+
+RM-7 marqué ✅ TERMINÉ (exécuté via RM-12-1).

@@ -110,7 +110,7 @@ contenu décrit le plugin, pas l'usage. Audience confirmée = plugin
 **Estimation** : 17 pts (7 US)
 **Dependances** : i18n-contracts 0.0.2 (N0 MEMPHIS), codebase-plugin (N1)
 **Cadrage** : `CADRAGE_EPIC_RM_I18N.adoc` (Session 010)
-**Statut** : US-0 ✅ TERMINÉ (S-010), US-1→6 À FAIRE
+**Statut** : US-0 ✅ TERMINÉ (S-010), US-1 ✅ TERMINÉ (S-011), US-2→6 À FAIRE
 
 readme-gradle consomme codebase (N1) comme socle LLM unifié et implémente
 l'auto-traduction i18n selon le pattern bakery (EPIC BKY-I18N) — le borough
@@ -125,8 +125,8 @@ se traduit lui-même via la tâche `translateReadme`.
 | ✅ TERMINÉ (S-010)
 
 | RM-12-1
-| *Cleanup dépendances* (RM-7 étendu) — suppression `node-gradle` + bundle `readme.ai` compileOnly (6 modules langchain4j caducs). `compileKotlin` VERT. ~3 unit | 1
-| 🟡 À FAIRE
+| *Cleanup dépendances* (RM-7 étendu) — suppression `node-gradle` (`build.gradle.kts:47`) + suppression bundle `readme.ai` compileOnly (`build.gradle.kts:43`, 6 modules langchain4j caducs). `compileKotlin` VERT. ~3 unit (non-régression compile). *Exécuté S-011* : déblocage préalable bump codebase 0.0.2→0.0.8 (conflit kotlin-stdlib), gate check VERT 80 tests 0 FAIL | 1
+| ✅ TERMINÉ (S-011)
 
 | RM-12-2
 | *Refonte README consommateur vs plugin* (RM-11) — README.md racine perd sections dev, gagne Clone & Use + Personalization. readme-plugin/README.md gagne Périmètre + Tâches exhaustives. Sync 20 fichiers i18n | 3
@@ -171,12 +171,14 @@ Remplacer les occurences de `processReadme` et `scaffoldReadme` par
 
 Référence `com.cheroliv`, anciens noms de tâches.
 
-=== RM-7 — Supprimer dépendances inutilisées ✅ CADUQUE (absorbé dans RM-12-1 S-010)
+=== RM-7 — Supprimer dépendances inutilisées ✅ TERMINÉ (S-011, via RM-12-1)
 **Priorite** : P2
 **Estimation** : 1 pt
 
 Suppression `node-gradle` + bundle `readme.ai` compileOnly mort.
-Absorbé dans RM-12-1 (cleanup préalable au cadrage RM-12).
+Exécuté en session 011 (RM-12-1) : suppression dans `build.gradle.kts`,
+zéro référence src/ vérifiée, check VERT 80 tests 0 FAIL. Entrées
+catalogue conservées volontairement (purge définitive à RM-12-3).
 
 === RM-8 — Traduire logs et KDoc en anglais
 **Priorite** : P2

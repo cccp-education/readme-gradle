@@ -15,9 +15,10 @@ _Session terminee_ : 007 — README i18n (20 fichiers, 10 langues, switcher, bad
 _Session terminee_ : 008 — Architecture README Plugin + Consommateur (déplacement README.plugin → readme-plugin/, README.consommateurs → racine, liens i18n recréés) ✅
 _Session terminee_ : 009 — CNV-6 Migration conventions plugins education.cccp.build.* v0.0.1 ✅
 _Session terminee_ : 010 — Cadrage EPIC RM-12 (readme-LLM) + RM-4b (auto-traduction i18n pattern bakery) ✅
+_Session terminee_ : 011 — RM-12-1 cleanup dépendances (node-gradle + bundle readme.ai) + déblocage codebase 0.0.8 ✅
 
-_Dernière mise à jour_ : 2026-08-24 (Session 010 Cadrage RM-12/RM-4b)
-_Prochaine session_ : 011 — RM-12-1 cleanup dépendances (RM-7 étendu : node-gradle + readme.ai bundle)
+_Dernière mise à jour_ : 2026-08-24 (Session 011 RM-12-1 cleanup)
+_Prochaine session_ : 012 — RM-12-2 refonte README consommateur vs plugin selon article 0124
 
 '''
 == RÈGLES ABSOLUES (résumé)
@@ -69,12 +70,12 @@ Publié : Maven Central (education.cccp:readme-plugin v0.0.1)
 | RM-4 | Support multi-langue — base i18n livrée (20 README × 10 langues, session 007), automatisation dogfooding restante | 🟡 base ✅ / auto À FAIRE (RM-4b reframé dans RM-12)
 | RM-5 | Aligner README_truth*.adoc sur les noms de tâches actuels | À FAIRE (post RM-12-2 refonte README)
 | RM-6 | Nettoyer prompt.md (obsolète) | À FAIRE
-| RM-7 | Supprimer dépendances inutilisées — étendu : node-gradle + bundle readme.ai compileOnly mort | 🟡 À FAIRE (RM-12-1)
+| RM-7 | Supprimer dépendances inutilisées — étendu : node-gradle + bundle readme.ai compileOnly mort | ✅ TERMINÉ (S-011, exécuté via RM-12-1)
 | RM-8 | Traduire logs et KDoc en anglais | À FAIRE
 | RM-9 | Synchroniser version PlantUML dans README_truth*.adoc | À FAIRE (post RM-12-2)
 | RM-10 | Nettoyer les références à readme-truth.yml dans la doc | À FAIRE (post RM-12-2)
 | RM-11 | Refonte README consommateur vs plugin selon article 0124 (nouveau) | 🟡 À FAIRE (RM-12-2)
-| RM-12 | Cadrage EPIC readme-LLM + auto-traduction i18n pattern bakery (nouveau) | 🟡 À FAIRE (cadrage ✅ S-010, US-1→6 TODO)
+| RM-12 | Cadrage EPIC readme-LLM + auto-traduction i18n pattern bakery (nouveau) | 🟡 EN COURS (US-0 ✅ S-010, US-1 ✅ S-011, US-2→6 TODO)
 | CNV-6 | Migration conventions plugins education.cccp.build.* v0.0.1 (gradle-plugin + publishing) | ✅ 2026-07-03
 | Publication Maven Central 0.0.1 | nmcp, POM sans guard, codebase-contracts:0.0.2, buildscript resolutionStrategy, settings nmcp | ✅ 2026-06-11
 |===
@@ -84,6 +85,7 @@ Publié : Maven Central (education.cccp:readme-plugin v0.0.1)
 
 |===
 | # | Date | Type | Sujet | Score
+| 011 | 2026-08-24 | dev | RM-12-1 cleanup dépendances — déblocage baseline (bump codebase 0.0.2→0.0.8, conflit kotlin-stdlib strictly 2.3.21 wrapper vs 2.3.10 transitif) + suppression `compileOnly(libs.bundles.readme.ai)` (6 modules langchain4j caducs) + `implementation(libs.node.gradle)` + TODO mort. Zéro référence src/ vérifiée avant suppression. Gate : check VERT 80 tests 0 FAIL (unit+cucumber+functional). Zéro fichier production modifié | 9/10
 | 010 | 2026-08-24 | governance | Cadrage EPIC RM-12 (readme-LLM) + RM-4b (auto-traduction i18n pattern bakery post-SLD-8) — audit 8 constats (zéro LLM consommé, bundle readme.ai compileOnly mort, node-gradle inutilisé, README se chevauchent, 20 fichiers i18n manuels), 11 décisions (pattern post-SLD-8 codebase N1, domaine readme.llm + readme.i18n, translateReadme additive, cleanup RM-7 étendu), 7 US ~17 pts. Doc CADRAGE_EPIC_RM_I18N.adoc. Zéro code modifié — gouvernance pure pattern S-057/S-063 | 10/10
 | 009 | 2026-07-03 | dev | CNV-6 Migration — convention plugins education.cccp.build.* v0.0.1 appliquées (gradle-plugin + publishing), build.gradle.kts 270→224 (-46), compileKotlin SUCCESS. Variantes gardées : extendsFrom legacy, exclusions logback, filter scenarios | ✅ TERMINÉ
 | 008 | 2026-06-24 | refactor README | Architecture README Plugin + Consommateur — déplacement README.plugin → readme-plugin/, README.consommateurs → racine, liens i18n recréés (10 langues) | 8/10

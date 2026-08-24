@@ -1,0 +1,76 @@
+= Session 011 — RM-12-1 cleanup dépendances (node-gradle + bundle readme.ai)
+:date: 2026-08-24
+:session: 011
+:borough: Chiraq 🟤
+:type: dev
+:score: 9/10
+
+== Objectif
+
+Exécuter US-1 de l'EPIC RM-12 : suppression des dépendances mortes
+`node-gradle` et bundle `readme.ai` compileOnly (RM-7 étendu),
+préalable à l'infra LLM `readme.llm` (RM-12-3).
+
+== Déblocage préalable — bump codebase 0.0.2 → 0.0.8
+
+La baseline était ROUGE avant toute modification :
+
+----
+Could not resolve org.jetbrains.kotlin:kotlin-stdlib:{strictly 2.3.21}
+2.3.10 - transitively via 'education.cccp.codebase:...gradle.plugin:0.0.2'
+----
+
+Le plugin codebase 0.0.2 (ancien, publié S-006) embarque kotlin-stdlib
+2.3.10 en conflit avec le wrapper Gradle 9.6.1 (strictly 2.3.21).
+Les boroughs voisins consommateurs codebase N1 sont déjà alignés :
+slider 0.0.8, capsule 0.0.8, planner 0.0.7.
+
+*Fix* : `gradle/libs.versions.toml` — `codebase = "0.0.2"` → `0.0.8`
+(alignement slider/capsule). Avec accord explicite de l'utilisateur.
+Baseline re-vérifiée VERTE après bump.
+
+== Cleanup (baby-step)
+
+. *Vérification préalable* : `grep langchain4j|node.gradle|NodePlugin`
+  sur `src/` → zéro référence. Suppression safe confirmée.
+. *Suppression* dans `build.gradle.kts` :
+  - `compileOnly(libs.bundles.readme.ai)` (6 modules langchain4j caducs :
+    ollama, open-ai, gemini, mistral, pgvector, all-minilm — codebase N1
+    fournit le bridge depuis RM-12-3)
+  - `implementation(libs.node.gradle)` + commentaire TODO mort
+    (`//TODO: readme to html and serve`)
+. *compileKotlin* VERT (20s).
+
+== Gate non-régression
+
+----
+./gradlew check  BUILD SUCCESSFUL in 2m54s
+80 tests, 1 skipped, 0 failures, 0 errors
+(unit + cucumberTest + functionalTest — baseline préservée)
+----
+
+Zéro fichier production modifié (uniquement build scripts).
+Zéro secret. Zéro bump BOM.
+
+== Nettoyage catalogue résiduel
+
+Les entrées `node-gradle`, `langchain4j-*` restent déclarées dans
+`libs.versions.toml` ([libraries]/[bundles] readme-ai) mais ne sont plus
+consommées par aucune configuration Gradle. Elles seront purgées au
+moment du câblage réel `readme.llm` (RM-12-3) si le pattern retenu
+(consommation `LlmBuildService` N1) les rend définitivement inutiles —
+décision volontaire pour garder le diff US-1 minimal (économie d'encre,
+rollback trivial).
+
+== Prochaine session — 012
+
+- RM-12-2 : Refonte README consommateur vs plugin selon article 0124
+  (README.md racine perd sections dev, gagne Clone & Use +
+  Personalization ; readme-plugin/README.md gagne Périmètre + Tâches
+  exhaustives ; sync 20 fichiers i18n).
+
+Puis :
+- RM-12-3 : Infra LLM `readme.llm` (port + adapter + LlmBuildService N1)
+- RM-12-4 : Domaine `readme.i18n` + adapter (pattern bakery)
+- RM-12-5 : Tâche `translateReadme` + dogfooding 20 fichiers
+- RM-12-6 : Cucumber BDD `readme_i18n.feature`
