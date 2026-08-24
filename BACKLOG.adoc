@@ -1,17 +1,17 @@
 = Backlog — Chiraq (readme-gradle)
 :description: Backlog readme-gradle — EPICs RM + PUB
-:date: 2026-06-24
+:date: 2026-08-24
 :toc: left
 :sectnums:
 
-_Source : configuration/EPIC_PUB.adoc (Session 096) + roadmap INDEX.adoc_
+_Source : configuration/EPIC_PUB.adoc (Session 096) + roadmap INDEX.adoc + CADRAGE_EPIC_RM_I18N.adoc (Session 010)_
 
 '''
 == EPIC PUB — Publication Maven Central
 
 Plugin N2 de generation README avec diagrammes PlantUML. VAGUE 4 (plugins metier).
 
-=== PUB-3.11 — readme-plugin
+=== PUB-3.11 — readme-plugin ✅ TERMINÉ (S-006)
 **Priorite** : P0
 **Estimation** : 1 pt
 **Dependances** : PUB-0 et PUB-1 complets (DNS TXT + GPG)
@@ -50,9 +50,9 @@ Par :
 | readme-plugin | https://central.sonatype.com/artifact/education.cccp/readme-plugin |
 
 '''
-== EPIC RM-4 — Support multi-langue i18n
+== ✅ EPIC RM-4 — Support multi-langue i18n (base livrée)
 
-=== RM-4a — Base i18n livrée (session 007) ✅
+=== RM-4a — Base i18n livrée (session 007) ✅ TERMINÉ (S-007)
 
 20 fichiers README générés (10 langues × consommateur + plugin) :
 - `README.consommateurs/` (10) : en/zh/hi/es/fr/ar/bn/pt/ru/ur
@@ -63,14 +63,155 @@ Par :
 - AR et UR en RTL natif (rendu Unicode GitHub, pas de `dir="rtl"`)
 - Placeholder `<YOUR_GITHUB_PAT>` préservé (sentinel du plugin)
 
-=== RM-4b — Automatisation dogfooding À FAIRE
+=== RM-4b — Automatisation dogfooding ✅ CADUQUE (absorbé dans RM-12 S-010)
 
-Génération *automatique* des traductions par le plugin lui-même :
-- Tâche Gradle `translateReadme` (ou similaire) depuis `README.md` master
-- Intégration LLM (LangChain4j) pour traduction assistée
-- Régénération synchronisée à chaque release
-- Validation cohérence badges/switcher/marqueurs
+Reframé dans l'EPIC RM-12 (US-4/US-5) — auto-traduction via pattern
+bakery post-SLD-8 (consommation codebase N1 `LlmBuildService` +
+`i18n-contracts` N0). Voir `CADRAGE_EPIC_RM_I18N.adoc`.
 
 **Priorite** : P2
-**Estimation** : 5 pts
+**Estimation** : 5 pts → absorbé dans RM-12 (17 pts)
 **Dependances** : RM-4a ✅, i18n-contracts N0 (MEMPHIS MEM-3)
+
+'''
+== 🟡 EPIC RM-11 — Refonte README consommateur vs plugin selon article 0124
+
+**Priorite** : P1
+**Estimation** : 3 pts (absorbé dans RM-12 US-2)
+**Dependances** : Aucune
+**Cadrage** : `CADRAGE_EPIC_RM_I18N.adoc` (Session 010)
+
+Refonte des 2 README selon l'architecture « Plugin Indépendant + Racine
+Consommateur » (article 0124). Séparation stricte des audiences :
+
+=== RM-11-1 — README Consommateur (Clone & Use)
+*Audience* : utilisateur qui clone le dépôt pour consommer le plugin.
+
+- Perte : sections dev (build/test/dépendances, `./gradlew -p readme-plugin build`)
+- Gain : section "Clone & Use" (use case de clonage zero-config)
+- Gain : section "Personalization" (leviers de `readme.yml`)
+
+=== RM-11-2 — README Plugin (Build & Contribute)
+*Audience* : développeur qui modifie/publie le plugin.
+
+- Gain : section "Périmètre" (fait / ne fait pas)
+- Gain : section "Tâches Gradle" exhaustive (inputs/outputs/dépendances)
+- Perte : Quick Start (relève du consommateur)
+
+=== RM-11-3 — README_truth.adoc audience = plugin
+`README_truth.adoc` contient 7 diagrammes PlantUML d'architecture. Son
+contenu décrit le plugin, pas l'usage. Audience confirmée = plugin
+(référence canonique + input dogfooding).
+
+'''
+== 🟡 EPIC RM-12 — Cadrage readme-LLM + auto-traduction i18n (pattern bakery)
+
+**Priorite** : P1
+**Estimation** : 17 pts (7 US)
+**Dependances** : i18n-contracts 0.0.2 (N0 MEMPHIS), codebase-plugin (N1)
+**Cadrage** : `CADRAGE_EPIC_RM_I18N.adoc` (Session 010)
+**Statut** : US-0 ✅ TERMINÉ (S-010), US-1→6 À FAIRE
+
+readme-gradle consomme codebase (N1) comme socle LLM unifié et implémente
+l'auto-traduction i18n selon le pattern bakery (EPIC BKY-I18N) — le borough
+se traduit lui-même via la tâche `translateReadme`.
+
+[cols="1,3,1,1", options="header"]
+|===
+| US | Description | Pts | Statut
+
+| RM-12-0
+| *Cadrage EPIC* — audit 8 constats, 11 décisions, 7 US. Doc `CADRAGE_EPIC_RM_I18N.adoc` | 1
+| ✅ TERMINÉ (S-010)
+
+| RM-12-1
+| *Cleanup dépendances* (RM-7 étendu) — suppression `node-gradle` + bundle `readme.ai` compileOnly (6 modules langchain4j caducs). `compileKotlin` VERT. ~3 unit | 1
+| 🟡 À FAIRE
+
+| RM-12-2
+| *Refonte README consommateur vs plugin* (RM-11) — README.md racine perd sections dev, gagne Clone & Use + Personalization. readme-plugin/README.md gagne Périmètre + Tâches exhaustives. Sync 20 fichiers i18n | 3
+| 🟡 À FAIRE
+
+| RM-12-3
+| *Infra LLM `readme.llm`* (domaine 1er) — `LlmService` port fun interface (mirror `bakery.llm.LlmService`) + `ChatModelLlmAdapter` bridge ChatModel langchain4j via `LlmBuildService` N1 (pattern `slider.ai`). Dépendance `i18n-contracts` 0.0.2. ~10 unit | 3
+| 🟡 À FAIRE
+
+| RM-12-4
+| *Domaine `readme.i18n` + adapter* (domaine 2ème) — `ReadmeTranslationServiceAdapter` (implémente `TranslationService` N0) + `ReadmeTranslationApplier` + `RtlDirectionHandler` (LanguageCatalog N0) + `ReadmeSnapshot` (checksums delta) + `ReadmeValidationAuditor`. ~15 unit | 4
+| 🟡 À FAIRE
+
+| RM-12-5
+| *Tâche `translateReadme` + dogfooding* — `TranslateReadmeTask` (groupe `generate`) + câblage `ReadmePlugin` + dogfooding réel : 20 fichiers générés (10 langues × 2 audiences). `--rerun-tasks` → économie d'encre (checksums delta skip). ~5 functional | 3
+| 🟡 À FAIRE
+
+| RM-12-6
+| *Cucumber BDD* — `readme_i18n.feature` : ~4 scénarios (translateReadme génère 20 fichiers, checksums delta skip, fallback degraded LLM unavailable, RTL AR/UR, badges cohérents). Inspiré `bakery_i18n.feature` | 2
+| 🟡 À FAIRE
+|===
+
+'''
+== EPICs dette technique (post RM-12-2 refonte README)
+
+=== RM-1 — Migrer prompt.md → archives gouvernance (LAZY)
+**Priorite** : P3
+**Estimation** : 1 pt
+
+=== RM-5 — Aligner README_truth*.adoc sur noms de tâches actuels
+**Priorite** : P2
+**Estimation** : 1 pt
+**Dependances** : RM-12-2 (refonte README selon article 0124)
+
+Remplacer les occurences de `processReadme` et `scaffoldReadme` par
+`generateReadme`, `transformReadme`, `commitGeneratedReadme`.
+
+=== RM-6 — Nettoyer prompt.md (obsolète)
+**Priorite** : P3
+**Estimation** : 1 pt
+**Dependances** : RM-1
+
+Référence `com.cheroliv`, anciens noms de tâches.
+
+=== RM-7 — Supprimer dépendances inutilisées ✅ CADUQUE (absorbé dans RM-12-1 S-010)
+**Priorite** : P2
+**Estimation** : 1 pt
+
+Suppression `node-gradle` + bundle `readme.ai` compileOnly mort.
+Absorbé dans RM-12-1 (cleanup préalable au cadrage RM-12).
+
+=== RM-8 — Traduire logs et KDoc en anglais
+**Priorite** : P2
+**Estimation** : 2 pts
+
+`CommitGeneratedReadmeTask.kt`, `AdocSourceFile.kt` — logs et KDoc en
+français à traduire en anglais (règle English Only).
+
+=== RM-9 — Synchroniser version PlantUML dans README_truth*.adoc
+**Priorite** : P3
+**Estimation** : 1 pt
+**Dependances** : RM-12-2 (refonte README selon article 0124)
+
+Version PlantUML `1.2024.3` → version réelle `1.2026.0`.
+
+=== RM-10 — Nettoyer références readme-truth.yml dans la doc
+**Priorite** : P3
+**Estimation** : 1 pt
+**Dependances** : RM-12-2 (refonte README selon article 0124)
+
+Remplacer par `readme.yml`.
+
+=== RM-2 — Tests integration avec graphify-gradle ✅ CADUQUE (absorbé dans RM-12 S-010)
+**Priorite** : P3
+**Estimation** : 2 pts
+
+Absorbé dans RM-12 (use case contexte augmenté via `graph.json` de
+graphify-gradle nourrit le contexte augmenté). Voir `CADRAGE_EPIC_RM_I18N.adoc`.
+
+'''
+== EPIC RM-3 — Release v1.0.0 Plugin Portal
+
+**Priorite** : P3
+**Estimation** : 1 pt
+**Dependances** : RM-12 terminé + dette technique liquidée
+
+Release stable v1.0.0 sur Gradle Plugin Portal après stabilisation
+post-RM-12 (infra LLM + auto-traduction i18n opérationnelle).

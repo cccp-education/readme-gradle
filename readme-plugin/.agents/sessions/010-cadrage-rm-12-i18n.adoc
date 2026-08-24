@@ -1,0 +1,153 @@
+= Session 010 — Cadrage EPIC RM-12 (readme-LLM) + RM-4b (auto-traduction i18n)
+:date: 2026-08-24
+:session: 010
+:borough: Chiraq 🟤
+:type: governance
+:score: 10/10
+
+== Objectif
+
+Brainstorming affiné sur le borough readme-gradle → cadrage formel de
+l'EPIC RM-12 (infra LLM + auto-traduction i18n pattern bakery post-SLD-8)
+et RM-4b (reframé comme use case 0 de RM-12).
+
+== Contexte
+
+L'utilisateur a demandé un brainstorming sur le borough readme-gradle.
+Après chargement du contexte (INDEX, BACKLOG, PROMPT_REPRISE,
+SESSION_CHECKLIST, README consommateur, README plugin, article 0124
+sur l'architecture « Plugin Indépendant + Racine Consommateur »),
+l'utilisateur a affiné la vision :
+
+1. *Séparation README consommateur vs plugin* selon l'article 0124 —
+   le consommateur = aide au use case de clonage + personnalisation ;
+   le plugin = description exhaustive (tâches, périmètre, CI/CD,
+   lien Central, version).
+
+2. *LLM et contexte augmenté via codebase* comme bakery et les autres
+   boroughs — readme-gradle ne réinvente pas sa pile IA, il consomme
+   codebase N1.
+
+3. *i18n selon le pattern bakery* (EPIC BKY-I18N) — le borough se
+   traduit lui-même via `translateReadme`, pattern post-SLD-8
+   (consommation `LlmBuildService` de codebase N1).
+
+== Audit — 8 constats
+
+. *readme-gradle n'utilise aucun LLM ni contexte augmenté aujourd'hui*
+  — `src/main/kotlin/readme/` 9 fichiers, zéro import langchain4j, zéro
+  `LlmBuildService`, zéro `CompositeContext`. Bundle `readme.ai` en
+  `compileOnly` mais aucune classe ne le consomme.
+. *`alias(libs.plugins.codebase)` appliqué mais codebase non consommé*
+  — `build.gradle.kts:19`, le plugin est un no-op pour readme-gradle.
+. *Bundle `readme.ai` compileOnly est du code mort* — 6 modules
+  langchain4j (ollama, open-ai, gemini, mistral, pgvector, all-minilm)
+  caducs si on consomme codebase N1.
+. *`node-gradle` (RM-7) est aussi du code mort* — `build.gradle.kts:47`
+  avec commentaire `//TODO: readme to html and serve`, aucune classe
+  ne consomme `gradle-node-plugin`.
+. *README consommateur et README plugin se chevauchent* — README.md
+  racine (168 lignes) contient sections dev. readme-plugin/README.md
+  (205 lignes) contient le module layout complet. Frontière floue.
+. *20 fichiers i18n générés manuellement (session 007)* — pas de
+  régénération auto. Si le master change, les 20 fichiers désync.
+. *Bakery a un pattern i18n mature (EPIC BKY-I18N terminé S-194)* —
+  14 fichiers domaine `bakery.i18n` + `bakery.llm`. Template de
+  référence.
+. *Slider a le pattern post-SLD-8 pour la consommation codebase* —
+  `AssistantManager.kt:76-113` `registerLlmBuildService()` +
+  `resolveModel()`. SLD-5 (DeckTranslator + translateDeck) est le
+  pattern le plus proche (traduction one-to-many).
+
+== Décisions architecturales (11)
+
+. *Portée EPIC* : RM-12 = infra LLM, RM-4b = use case i18n. Cadrés
+  ensemble — l'infra est définie *pour* le use case.
+. *Pattern post-SLD-8* : consommation `LlmBuildService` de codebase N1
+  (slider SLD-5, capsule CAP-29), pas legacy bakery (`OllamaLlmService`).
+. *Domaine `readme.llm`* (1er) : port `LlmService` fun interface +
+  `ChatModelLlmAdapter` bridge ChatModel langchain4j via N1.
+. *Domaine `readme.i18n`* (2ème) : mirror `bakery.i18n` —
+  `ReadmeTranslationServiceAdapter`, `ReadmeTranslationApplier`,
+  `TranslateReadmeTask`, `RtlDirectionHandler`, `ReadmeSnapshot`,
+  `ReadmeValidationAuditor`.
+. *Contexte augmenté* : pas de RAG pgvector. README court auto-contenu.
+  Prompt embarque master + règles cohérence + règles RTL.
+. *2 README masters, 20 fichiers générés* : `README.md` racine → 9
+  traductions + `readme-plugin/README.md` → 9 traductions. Marqueur
+  `<!-- translated from -->` + switcher + badges + RTL natif AR/UR.
+. *Suppression bundle `readme.ai` compileOnly* (RM-7 étendu) + `node-gradle`.
+. *Dépendance Gradle* : `i18n-contracts` 0.0.2 (N0) ajouté. Pas de bump BOM.
+. *Backward compat* : `translateReadme` additive. 3 tâches existantes
+  inchangées. `translateReadme` ne dépend pas du pipeline PlantUML.
+. *Méthode* : baby-step DDD/TDD/BDD, 3 niveaux tests/US, English only.
+. *Ordre* : US-1 (cleanup) → US-2 (refonte README) → US-3 (infra LLM)
+  → US-4 (domaine i18n) → US-5 (tâche + dogfooding) → US-6 (Cucumber).
+
+== US découpage (7 US, ~17 pts)
+
+[cols="1,3,1,1", options="header"]
+|===
+| US | Description | Pts | Statut
+
+| RM-12-0
+| Cadrage EPIC — audit, décisions, découpage US. Doc `CADRAGE_EPIC_RM_I18N.adoc` | 1
+| ✅ TERMINÉ (S-010)
+
+| RM-12-1
+| Cleanup dépendances (RM-7 étendu) — suppression `node-gradle` + `readme.ai` bundle | 1
+| 🟡 À FAIRE
+
+| RM-12-2
+| Refonte README consommateur vs plugin selon article 0124 (RM-11) | 3
+| 🟡 À FAIRE
+
+| RM-12-3
+| Infra LLM `readme.llm` — `LlmService` port + `ChatModelLlmAdapter` via N1 | 3
+| 🟡 À FAIRE
+
+| RM-12-4
+| Domaine `readme.i18n` + adapter — `ReadmeTranslationServiceAdapter` + `ReadmeTranslationApplier` + `RtlDirectionHandler` + `ReadmeSnapshot` + `ReadmeValidationAuditor` | 4
+| 🟡 À FAIRE
+
+| RM-12-5
+| Tâche `translateReadme` + dogfooding 20 fichiers (10 langues × 2 audiences) | 3
+| 🟡 À FAIRE
+
+| RM-12-6
+| Cucumber BDD `readme_i18n.feature` — ~4 scénarios | 2
+| 🟡 À FAIRE
+|===
+
+== Fichiers modifiés
+
+|===
+| Fichier | Action | Description
+
+| `.agents/CADRAGE_EPIC_RM_I18N.adoc` | CRÉÉ | Cadrage EPIC RM-12 + RM-4b (195 lignes)
+| `.agents/INDEX.adoc` | MODIFIÉ | Session 010 ajoutée, roadmap mise à jour (RM-2/7 caduques, RM-11/12 nouveaux)
+| `BACKLOG.adoc` (racine) | MODIFIÉ | EPIC RM-11/12 ajoutés, RM-2/RM-4b/RM-7 marqués caduques, dette technique post-RM-12-2
+| `PROMPT_REPRISE.adoc` | MODIFIÉ | Session 011, prochaine = RM-12-1 cleanup
+| `.agents/SESSIONS_HISTORY.adoc` | MODIFIÉ | Session 010 ajoutée
+| `.agents/sessions/010-cadrage-rm-12-i18n.adoc` | CRÉÉ | Ce rapport
+|===
+
+== Épics absorbés/caduqués
+
+| EPIC | Statut | Raison
+| RM-2 | ✅ CADUQUE | Absorbé dans RM-12 (use case contexte augmenté via graph.json)
+| RM-4b | ✅ CADUQUE | Reframé dans RM-12 (US-4/US-5, pattern bakery post-SLD-8)
+| RM-7 | ✅ CADUQUE | Absorbé dans RM-12-1 (cleanup préalable, étendu : node-gradle + readme.ai)
+| RM-11 | 🟡 À FAIRE | Absorbé dans RM-12-2 (refonte README article 0124)
+
+== Non-régression
+
+Zéro code source modifié. Zéro test lancé. Gouvernance pure pattern
+S-057/S-063 (cadrage-only, comme PLN-VERIFY S-063, PLN-BUDGET S-068,
+PLN-LIFECYCLE S-074).
+
+== Prochaine session (011)
+
+RM-12-1 : cleanup dépendances (suppression `node-gradle` +
+`readme.ai` bundle compileOnly mort). `compileKotlin` VERT.
+~3 unit (non-régression compile).

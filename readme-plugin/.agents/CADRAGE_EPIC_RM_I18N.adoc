@@ -1,0 +1,303 @@
+= CADRAGE_EPIC_RM_I18N.adoc — EPIC RM-12 (readme-LLM) + RM-4b (auto-traduction i18n)
+:date: 2026-08-24
+:toc: left
+:sectnums:
+
+== Vision
+
+readme-gradle consomme codebase (N1) comme socle LLM unifié et
+implémente l'auto-traduction i18n selon le pattern bakery (EPIC
+BKY-I18N) — le borough se traduit lui-même. Le plugin génère
+automatiquement les 20 fichiers README (10 langues × 2 audiences :
+consommateur + plugin) depuis un master EN unique via la tâche
+`translateReadme`, en consommant `LlmBuildService` de codebase (N1)
+et `i18n-contracts` (N0 MEMPHIS).
+
+L'EPIC RM-12 (cadrage infra LLM) et RM-4b (use case i18n) sont cadrés
+ensemble : l'infra est définie *pour* le use case, pas pour elle-même.
+
+== Articulation de la consommation des EPICs
+
+L'EPIC RM-12/RM-4b s'inscrit dans la chaîne de consommation
+cross-borough N0→N1→N2 documentée :
+
+[cols="1,1,3,3", options="header"]
+|===
+| Niveau | Borough | Rôle | EPIC de référence
+
+| N0
+| MEMPHIS (workspace-bom)
+| Contrats partagés (TranslationService, TranslationRequest, TranslationResult, LanguageCatalog)
+| MEM-3 (i18n-contracts 0.0.2)
+
+| N1
+| Queens (codebase-gradle)
+| Hub LLM — LlmBuildService (Gradle DI) + LlmProviderChatModelAdapter (N1 depuis S-073)
+| SLD-8 US-8.1 (côté codebase) + EPIC LLM-ADAPTER-EXTRACT (S-073, adapter consolidé N1)
+
+| N2
+| Bushwick (bakery-gradle)
+| 1er consommateur i18n — LlmService port + LlmServiceTranslationAdapter + LlmTranslationApplier + MigrateToI18nTask + MigrateContentI18nTask + RtlDirectionInjector
+| BKY-I18N (terminé S-194 MASS-4)
+
+| N2
+| MIAMI (slider-gradle)
+| 2e consommateur i18n — DeckTranslator + translateDeck + LlmBuildService (post-SLD-8)
+| SLD-5 (terminé S-030)
+
+| N2
+| Chiraq (readme-gradle)
+| 3e consommateur i18n — readme.llm.LlmService + ReadmeTranslationServiceAdapter + translateReadme
+| RM-12 + RM-4b (cadrage S-010)
+|===
+
+Le pattern post-SLD-8 (slider SLD-5, capsule CAP-29) consomme
+`LlmBuildService` de codebase N1. Le pattern legacy bakery
+(`OllamaLlmService` local) est avoidé pour readme-gradle — on suit
+le pattern post-SLD-8 (plus propre, adapter consolidé N1).
+
+== Le pattern bakery (template de référence)
+
+```
+N0  i18n-contracts (MEMPHIS)
+    ├── TranslationService      (interface)
+    ├── TranslationRequest      (data class)
+    ├── TranslationResult       (sealed Success/Failure)
+    └── LanguageCatalog         (10 langues + RTL flag)
+
+N2  bakery.llm.LlmService                   (port fun interface, coroutine)
+    ↓ bridé par
+N2  LlmServiceTranslationAdapter           (implémente TranslationService N0)
+    ↓ consommé par
+N2  LlmTranslationApplier                  (traduit FR→EN valeur par valeur, fallback)
+    ↓ invoqué par
+N2  MigrateToI18nTask / MigrateContentI18nTask  (tâches Gradle)
+
+N2  RtlDirectionInjector                    (consomme LanguageCatalog N0)
+N2  PostMigrationSnapshot                   (checksums delta)
+N2  ValidationReport                        (audit cohérence)
+```
+
+Le pattern post-SLD-8 (slider SLD-5, capsule CAP-29) remplace
+l'`OllamaLlmService` local par consommation `LlmBuildService` de
+codebase N1 :
+
+```
+N2  {name}.llm.LlmService                   (port fun interface, coroutine)
+    ↓ bridé par
+N2  ChatModelLlmAdapter                     (bridge ChatModel langchain4j)
+    ↓ obtenu via
+N1  LlmBuildService + LlmProviderChatModelAdapter  (codebase N1)
+```
+
+== Transposition à readme-gradle (pattern post-SLD-8)
+
+```
+N0  i18n-contracts (MEMPHIS) — déjà publié
+    ├── TranslationService
+    ├── TranslationRequest / TranslationResult
+    └── LanguageCatalog (10 langues + RTL)
+
+N2  readme.llm.LlmService                   (port fun interface, coroutine)
+    ↓ bridé par
+N2  readme.llm.ChatModelLlmAdapter          (bridge ChatModel langchain4j)
+    ↓ obtenu via
+N1  LlmBuildService + LlmProviderChatModelAdapter  (codebase N1)
+
+N2  readme.i18n.ReadmeTranslationServiceAdapter  (implémente TranslationService N0)
+    ↓ consommé par
+N2  readme.i18n.ReadmeTranslationApplier    (traduit README.md master → 10 langues)
+    ↓ invoqué par
+N2  TranslateReadmeTask                     (tâche Gradle translateReadme)
+
+N2  readme.i18n.RtlDirectionHandler          (consomme LanguageCatalog N0, AR/UR)
+N2  readme.i18n.ReadmeSnapshot               (checksums delta — régénération sync)
+N2  readme.i18n.ReadmeValidationAuditor     (badges/switcher/marqueurs cohérents)
+```
+
+== Audit — 8 constats
+
+[cols="1,3,3", options="header"]
+|===
+| # | Constat | Preuve
+
+| 1
+| readme-gradle n'utilise aucun LLM ni contexte augmenté aujourd'hui
+| `readme-plugin/src/main/kotlin/readme/` — 9 fichiers, zéro import langchain4j, zéro `LlmBuildService`, zéro `CompositeContext`. Le bundle `readme.ai` (langchain4j-ollama, open-ai, gemini, mistral, pgvector, all-minilm) est en `compileOnly` (`build.gradle.kts:43`) mais aucune classe ne le consomme.
+
+| 2
+| `alias(libs.plugins.codebase)` appliqué mais codebase n'est pas consommé
+| `build.gradle.kts:19` — le plugin codebase est appliqué mais le code source ne référence aucun service de codebase (`LlmBuildService`, `LlmProvider`, `LlmProviderChatModelAdapter`). Le plugin codebase est un no-op pour readme-gradle actuellement.
+
+| 3
+| Le bundle `readme.ai` compileOnly est du code mort
+| `build.gradle.kts:43` — `compileOnly(libs.bundles.readme.ai)` déclare 6 modules langchain4j (ollama, open-ai, gemini, mistral, pgvector, all-minilm). Aucune classe production ne les importe. Si on consomme codebase N1 pour le LLM, c'est codebase qui fournit le bridge langchain4j — le bundle est caduc.
+
+| 4
+| `node-gradle` (RM-7) est aussi du code mort
+| `build.gradle.kts:47` — `implementation(libs.node.gradle)` avec commentaire `//TODO: readme to html and serve`. Aucune classe ne consomme `gradle-node-plugin`. Dépendance inutilisée.
+
+| 5
+| Le README consommateur et le README plugin se chevauchent
+| `README.md` racine (168 lignes) contient sections "Build & test" (`./gradlew -p readme-plugin build`) + matrice de tests — relèvent du dev plugin. `readme-plugin/README.md` (205 lignes) contient le module layout complet du dépôt. La frontière audience n'est pas nette.
+
+| 6
+| Les 20 fichiers i18n (10 langues × 2 audiences) ont été générés manuellement (session 007)
+| `README.consommateurs/` (10 fichiers) + `README.plugin/` (10 fichiers) — générés à la main en session 007. Pas de régénération automatique. Si le master change, les 20 fichiers deviennent désynchronisés. RM-4b documenté "Automatisation dogfooding À FAIRE" dans le BACKLOG.
+
+| 7
+| Bakery a un pattern i18n mature et testé (EPIC BKY-I18N terminé)
+| `bakery-plugin/.../i18n/` — 14 fichiers : LlmTranslationApplier, LlmServiceTranslationAdapter, I18nMigrationService, MigrateToI18nTask, MigrateContentI18nTask, RtlDirectionInjector, PostMigrationSnapshot, ValidationReport. Pattern complet avec checksums delta, dry-run, validation. C'est le template de référence.
+
+| 8
+| Slider a le pattern post-SLD-8 pour la consommation codebase
+| `slider-plugin/.../AssistantManager.kt:76-113` — `registerLlmBuildService()` + `resolveModel()` + `LlmProviderChatModelAdapter` (N1 depuis S-073). Slider SLD-5 (DeckTranslator + translateDeck) est le pattern post-SLD-8 le plus proche de ce que readme-gradle doit faire (traduction one-to-many).
+|===
+
+== Décisions architecturales
+
+. *Portée EPIC* : RM-12 définit l'infra LLM (`readme.llm` port +
+  adapter + consommation codebase N1), RM-4b implémente le use case
+  i18n (`readme.i18n` domaine + tâche `translateReadme` + 20 fichiers
+  générés). Les deux EPICs sont cadrés ensemble — l'infra est définie
+  *pour* le use case.
+
+. *Pattern post-SLD-8* : consommation `LlmBuildService` de codebase N1
+  (pattern slider SLD-5, capsule CAP-29), pas pattern legacy bakery
+  (`OllamaLlmService` local). L'adapter `LlmProviderChatModelAdapter`
+  est désormais consolidé côté codebase N1 (EPIC LLM-ADAPTER-EXTRACT
+  S-073 terminé). readme-gradle consomme l'adapter N1, ne le duplique
+  pas.
+
+. *Domaine `readme.llm`* (nouveau, 1er) : port `LlmService` (fun
+  interface, coroutine `suspend fun complete(prompt): String`) mirror
+  `bakery.llm.LlmService` + `ChatModelLlmAdapter` (bridge ChatModel
+  langchain4j via `LlmBuildService` N1). Pattern `slider.ai` post-SLD-8.
+
+. *Domaine `readme.i18n`* (nouveau, 2ème) : mirror `bakery.i18n` —
+  `ReadmeTranslationServiceAdapter` (implémente `TranslationService`
+  N0), `ReadmeTranslationApplier` (traduit master → langues cibles),
+  `TranslateReadmeTask` (tâche Gradle `translateReadme`),
+  `RtlDirectionHandler` (consomme `LanguageCatalog` N0),
+  `ReadmeSnapshot` + `ReadmeSnapshotLoader` (checksums delta),
+  `ReadmeValidationAuditor` (badges/switcher/marqueurs cohérents).
+
+. *Contexte augmenté* : pas de RAG pgvector. Le contenu à traduire
+  est un README court et auto-contenu. Le prompt embarque le README.md
+  master + règles de cohérence (badges, switcher i18n, marqueur
+  `<!-- translated from README.md rev X -->`) + règles RTL pour AR/UR
+  (pattern `RtlDirectionInjector` bakery). Pattern `DocKnowledgeBase`
+  bakery avoidé — pas de contexte documentaire externe nécessaire.
+
+. *2 README masters, 20 fichiers générés* : `README.md` racine
+  (master consommateur EN) → `README.consommateurs/README.{lang}.md`
+  × 9 + `readme-plugin/README.md` (master plugin EN) →
+  `readme-plugin/README.plugin/README.{lang}.md` × 9. Chaque fichier
+  reçoit marqueur `<!-- translated from README.md rev 0.0.1 -->` +
+  switcher i18n + badges alignés + RTL natif AR/UR.
+
+. *Suppression bundle `readme.ai` compileOnly* (RM-7 étendu) : les 6
+  modules langchain4j (ollama, open-ai, gemini, mistral, pgvector,
+  all-minilm) sont caducs — codebase N1 fournit le bridge. Suppression
+  aussi de `node-gradle` (inutilisée). Cleanup préalable au cadrage.
+
+. *Dépendance Gradle* : `implementation(libs.codebase.plugin)` déjà
+  présent (`build.gradle.kts:19` via `alias(libs.plugins.codebase)`).
+  Ajout `implementation(libs.i18n.contracts)` (N0, MEM-3 0.0.2 déjà
+  publié Central). Pas de bump BOM.
+
+. *Backward compat* : la tâche `translateReadme` est *additive*. Les
+  3 tâches existantes (`generateReadme`, `transformReadme`,
+  `commitGeneratedReadme`) sont inchangées. `translateReadme` ne
+  dépend pas du pipeline PlantUML — elle traduit du Markdown, pas de
+  l'AsciiDoc. Le consommateur qui ne veut pas l'i18n n'est pas impacté.
+
+. *Méthode* : baby-step DDD/TDD/BDD, 3 niveaux tests/US
+  (unit → functional → cucumber), English only code/Gherkin.
+
+. *Ordre* : US-0 (cadrage ✅) → US-1 (cleanup dépendances RM-7 étendu)
+  → US-2 (refonte README selon article 0124 RM-11) → US-3 (infra LLM
+  `readme.llm`) → US-4 (domaine `readme.i18n` + adapter) → US-5
+  (tâche `translateReadme` + dogfooding 20 fichiers) → US-6 (Cucumber
+  BDD).
+
+== US découpage
+
+[cols="1,3,1,1", options="header"]
+|===
+| US | Description | Pts | Statut
+
+| RM-12-0
+| *Cadrage EPIC* — audit readme-gradle + bakery + slider, 8 constats, décisions, découpage US. Maj INDEX/BACKLOG/PROMPT_REPRISE/AGENTS racine. Création `CADRAGE_EPIC_RM_I18N.adoc` | 1
+| ✅ TERMINÉ (S-010)
+
+| RM-12-1
+| *Cleanup dépendances* (RM-7 étendu) — suppression `node-gradle` (`build.gradle.kts:47`) + suppression bundle `readme.ai` compileOnly (`build.gradle.kts:43`, 6 modules langchain4j caducs). `compileKotlin` VERT. ~3 unit (non-régression compile) | 1
+| 🟡 À FAIRE
+
+| RM-12-2
+| *Refonte README consommateur vs plugin selon article 0124* (RM-11) — README.md racine perd sections dev (build/test/dépendances), gagne Clone & Use + Personalization. readme-plugin/README.md gagne Périmètre + Tâches exhaustives, perd Quick Start. Sync 20 fichiers i18n (10 langues × 2 audiences). ~4 US | 3
+| 🟡 À FAIRE
+
+| RM-12-3
+| *Infra LLM `readme.llm`* (domaine 1er) — `LlmService` port fun interface (mirror `bakery.llm.LlmService`) + `ChatModelLlmAdapter` bridge ChatModel langchain4j via `LlmBuildService` N1 (pattern `slider.ai.AssistantManager.registerLlmBuildService()` + `resolveModel()`). Dépendance `i18n-contracts` 0.0.2 ajoutée. ~10 unit | 3
+| 🟡 À FAIRE
+
+| RM-12-4
+| *Domaine `readme.i18n` + adapter* (domaine 2ème) — `ReadmeTranslationServiceAdapter` (implémente `TranslationService` N0, mirror `LlmServiceTranslationAdapter`) + `ReadmeTranslationApplier` (traduit master → langues cibles, mirror `LlmTranslationApplier`) + `RtlDirectionHandler` (consomme `LanguageCatalog` N0) + `ReadmeSnapshot`/`ReadmeSnapshotLoader` (checksums delta) + `ReadmeValidationAuditor`. ~15 unit | 4
+| 🟡 À FAIRE
+
+| RM-12-5
+| *Tâche `translateReadme` + dogfooding* — `TranslateReadmeTask` (groupe `generate`, mirror `MigrateToI18nTask`) + câblage `ReadmePlugin` (registerLlmBuildService + injection) + dogfooding réel : 20 fichiers générés (10 langues × 2 audiences) depuis les 2 masters EN. `--rerun-tasks` → économie d'encre prouvée (checksums delta skip). ~5 functional | 3
+| 🟡 À FAIRE
+
+| RM-12-6
+| *Cucumber BDD* — `readme_i18n.feature` : scénarios (translateReadme génère 20 fichiers depuis master EN, checksums delta skip si master inchangé, fallback degraded si LLM unavailable, RTL injecté pour AR/UR, badges/switcher cohérents). ~4 scénarios. Inspiré `bakery_i18n.feature` + pattern `SliderTranslationSteps` | 2
+| 🟡 À FAIRE
+|===
+
+_Total_ : 7 US, ~17 pts. _Méthode_ : baby-step DDD/TDD/BDD, 3 niveaux
+tests/US (unit → functional → cucumber), English only code/Gherkin.
+_Dépendances_ : codebase-plugin (déjà appliqué `alias(libs.plugins.codebase)`) +
+i18n-contracts 0.0.2 (N0, déjà publié Central, zéro bump BOM).
+_Non-régression critique_ : les 3 tâches existantes (`generateReadme`,
+`transformReadme`, `commitGeneratedReadme`) sont inchangées.
+`translateReadme` est additive.
+
+== Risques et mitigations
+
+[cols="2,3,3", options="header"]
+|===
+| Risque | Impact | Mitigation
+
+| Poids transitif codebase-plugin (RAG + pgvector + koog)
+| Build time readme-plugin augmente
+| slider + capsule + planner payent déjà ce coût sans issue. codebase-plugin est un JAR publié, résolu depuis Maven Central (pas recompilé).
+
+| `LlmProviderChatModelAdapter` déjà consolidé N1 (S-073)
+| Duplication si on copie côté readme
+| On consomme l'adapter N1 (`codebase.koog.llm.adapter.LlmProviderChatModelAdapter`), on ne le copie pas. Pattern post-SLD-8 strict.
+
+| Traduction LLM non-déterministe
+| Régénération produit des résultats différents
+| Checksums delta (pattern `PostMigrationSnapshot` bakery) — si le master n'a pas changé, skip. `--rerun-tasks` pour forcer la re-traduction.
+
+| Fallback LLM unavailable
+| Tâche échoue ou traduit mal
+| Pattern `LlmTranslationApplier` bakery : `TranslationResult.Failure` → conserve la valeur source (fallback, pas de crash). `ReadmeValidationAuditor` signale les traductions manquées.
+
+| 20 fichiers i18n existants (session 007) écrasés
+| Perte des traductions manuelles
+| Backup préalable (`.agents/sessions/010-readme-i18n-backup/`). La première exécution `translateReadme` remplace les 20 fichiers manuels par 20 fichiers LLM. Le master EN reste la source de vérité.
+|===
+
+== Références
+
+. *Template bakery i18n* : `bakery-plugin/.../i18n/` (14 fichiers, EPIC BKY-I18N terminé S-194)
+. *Template slider post-SLD-8* : `slider-plugin/.../AssistantManager.kt:76-113` (SLD-8 US-8.2 S-060)
+. *Template slider i18n* : `slider-plugin/.../slider/translation/` (SLD-5 S-030, DeckTranslator)
+. *Adapter N1* : `codebase-plugin/.../LlmProviderChatModelAdapter.kt` (49 lignes, EPIC LLM-ADAPTER-EXTRACT S-073)
+. *Hub N1* : `codebase-plugin/.../LlmBuildService.kt` (54 lignes) + `LlmProviderResolver.kt` (99 lignes)
+. *Contrat N0* : `workspace-bom/i18n-contracts/.../TranslationService.kt` (MEM-3 0.0.2)
+. *Article architecture* : `office/sites/cheroliv.com/jbake/content/blog/2026/0124_architecture_plugin_gradle_racine_consommateur_independant_post.adoc`
+. *EPIC articulation* : `CADRAGE_EPIC_RUNTIME_AGENTIQUE.adoc` racine (PILOT-OSS + RUNTIME-CONTRACTS)

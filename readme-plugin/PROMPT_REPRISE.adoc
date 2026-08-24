@@ -1,31 +1,50 @@
-= PROMPT_REPRISE — Chiraq (readme-plugin) — Session 010
-:date: 2026-07-03
-:session: 010
+= PROMPT_REPRISE — Chiraq (readme-plugin) — Session 011
+:date: 2026-08-24
+:session: 011
 
-== Session 009 terminée — CNV-6 Migration conventions plugins
+== Session 010 terminée — Cadrage EPIC RM-12 (readme-LLM) + RM-4b (auto-traduction i18n)
 
-Migration du `build.gradle.kts` vers les convention plugins
-`education.cccp.build.gradle-plugin` (0.0.1) + `education.cccp.build.publishing`
-(0.0.1), pattern bakery. build.gradle.kts 270→224 lignes (-46). compileKotlin
-SUCCESS. Variantes gardées : extendsFrom legacy, exclusions logback, filter scenarios.
+Cadrage EPIC RM-12 + RM-4b (gouvernance pure, zéro code, pattern S-057/S-063).
 
-CNV-6 ✅ TERMINÉ pour readme-gradle.
+Audit 8 constats :
+1. readme-gradle n'utilise aucun LLM ni contexte augmenté aujourd'hui
+2. `alias(libs.plugins.codebase)` appliqué mais codebase n'est pas consommé
+3. Bundle `readme.ai` compileOnly est du code mort (6 modules langchain4j)
+4. `node-gradle` (RM-7) est aussi du code mort
+5. README consommateur et README plugin se chevauchent
+6. 20 fichiers i18n générés manuellement (session 007), pas de régénération auto
+7. Bakery a un pattern i18n mature (EPIC BKY-I18N terminé)
+8. Slider a le pattern post-SLD-8 pour la consommation codebase
 
-== Prochaine session — 010 : backlog i18n + dette
+11 décisions architecturales :
+- Pattern post-SLD-8 (consommation `LlmBuildService` de codebase N1)
+- Domaine `readme.llm` (1er) + `readme.i18n` (2ème)
+- Tâche `translateReadme` additive (3 tâches existantes inchangées)
+- Cleanup RM-7 étendu (node-gradle + readme.ai bundle)
+- Refonte README selon article 0124 (RM-11 absorbé)
+- RM-2 + RM-4b absorbés dans RM-12
+- 7 US ~17 pts
 
-- RM-4 auto : Génération *automatique* des traductions par le plugin lui-même (dogfooding — tâche `translateReadme` depuis `README.md` master)
-- RM-1 : Migrer `prompt.md` → archives gouvernance (LAZY)
-- RM-5 : Aligner `README_truth*.adoc` sur noms de tâches actuels
-- RM-6 : Nettoyer `prompt.md` (obsolète)
-- RM-7 : Supprimer dépendance node-gradle inutilisée
-- RM-8 : Traduire logs/KDoc en anglais
-- RM-9 : Synchroniser version PlantUML dans README_truth*.adoc
-- RM-10 : Nettoyer références readme-truth.yml
+Doc `CADRAGE_EPIC_RM_I18N.adoc` créé.
+
+== Prochaine session — 011 : RM-12-1 cleanup dépendances
+
+- RM-12-1 : Suppression `node-gradle` (`build.gradle.kts:47`) + suppression
+  bundle `readme.ai` compileOnly (`build.gradle.kts:43`, 6 modules langchain4j
+  caducs). `compileKotlin` VERT. ~3 unit (non-régression compile).
+
+Puis enchaîner :
+- RM-12-2 : Refonte README consommateur vs plugin selon article 0124
+- RM-12-3 : Infra LLM `readme.llm` (port + adapter + LlmBuildService N1)
+- RM-12-4 : Domaine `readme.i18n` + adapter (pattern bakery)
+- RM-12-5 : Tâche `translateReadme` + dogfooding 20 fichiers
+- RM-12-6 : Cucumber BDD `readme_i18n.feature`
 
 == Contexte
 
 Borough CHIRAQ 🟤 — 13ème borough. Publié Maven Central (0.0.1).
-10 EPICs roadmap : RM-0 ✅, RM-4 🟡 (base ✅ / auto À FAIRE), RM-1/2/3/5/6/7/8/9/10 À FAIRE.
+EPIC RM-12 cadré (7 US ~17 pts). US-0 ✅, US-1→6 À FAIRE.
+Dette technique : RM-1/5/6/8/9/10 À FAIRE (post RM-12-2).
 
 == Rappel
 
@@ -33,3 +52,5 @@ Borough CHIRAQ 🟤 — 13ème borough. Publié Maven Central (0.0.1).
 - Vérifier AGENT.adoc avant d'agir
 - Pas de tests en fin de session sans permission
 - Placeholder `<YOUR_GITHUB_PAT>` = sentinel officiel (à préserver)
+- Pattern post-SLD-8 : consommer `LlmBuildService` de codebase N1,
+  ne pas dupliquer `LlmProviderChatModelAdapter` (consolidé N1 S-073)

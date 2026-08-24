@@ -1,11 +1,17 @@
 = Sessions History — Readme Plugin
 
-== Session 009 (2026-07-03) — CNV-6 Migration
+== Session 010 (2026-08-24) — Cadrage EPIC RM-12 (readme-LLM) + RM-4b (auto-traduction i18n)
 
-Migration du `build.gradle.kts` vers les convention plugins `education.cccp.build.gradle-plugin` (0.0.1) + `education.cccp.build.publishing` (0.0.1), pattern bakery. build.gradle.kts 270→224 lignes (-46). compileKotlin SUCCESS. Variantes gardées : extendsFrom legacy, exclusions logback, filter scenarios.
+Cadrage EPIC RM-12 + RM-4b (gouvernance pure, zéro code, pattern S-057/S-063).
+Audit 8 constats (zéro LLM consommé, bundle readme.ai compileOnly mort, node-gradle
+inutilisé, README se chevauchent, 20 fichiers i18n manuels). 11 décisions (pattern
+post-SLD-8 codebase N1, domaine readme.llm + readme.i18n, translateReadme additive,
+cleanup RM-7 étendu, refonte README article 0124, RM-2 + RM-4b absorbés). 7 US ~17 pts.
+Doc CADRAGE_EPIC_RM_I18N.adoc créé.
 
 |===
 | # | Date | Type | Sujet | Score
+| 010 | 2026-08-24 | governance | Cadrage EPIC RM-12 (readme-LLM) + RM-4b (auto-traduction i18n pattern bakery post-SLD-8) — audit 8 constats, 11 décisions, 7 US ~17 pts. Doc CADRAGE_EPIC_RM_I18N.adoc. Zéro code modifié — gouvernance pure pattern S-057/S-063 | 10/10
 | 009 | 2026-07-03 | dev | CNV-6 Migration — convention plugins education.cccp.build.* v0.0.1 (gradle-plugin + publishing), build.gradle.kts 270→224 (-46), compileKotlin SUCCESS. Variantes : extendsFrom legacy, exclusions logback, filter scenarios | ✅ TERMINÉ
 | 008 | 2026-06-24 | refactor README | Architecture README Plugin + Consommateur — déplacement README.plugin → readme-plugin/, README.consommateurs → racine, liens i18n recréés (10 langues) | 8/10
 | 007 | 2026-06-24 | i18n | README i18n — 20 fichiers (10 langues × consommateur + plugin), switcher, badges 0.0.1, RTL AR/UR, `<YOUR_GITHUB_PAT>` préservé | 9/10

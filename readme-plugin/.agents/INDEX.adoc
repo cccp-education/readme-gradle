@@ -14,9 +14,10 @@ _Session terminee_ : 006 — Publication Maven Central 0.0.1 ✅
 _Session terminee_ : 007 — README i18n (20 fichiers, 10 langues, switcher, badges 0.0.1, RTL AR/UR) ✅
 _Session terminee_ : 008 — Architecture README Plugin + Consommateur (déplacement README.plugin → readme-plugin/, README.consommateurs → racine, liens i18n recréés) ✅
 _Session terminee_ : 009 — CNV-6 Migration conventions plugins education.cccp.build.* v0.0.1 ✅
+_Session terminee_ : 010 — Cadrage EPIC RM-12 (readme-LLM) + RM-4b (auto-traduction i18n pattern bakery) ✅
 
-_Dernière mise à jour_ : 2026-07-03 (Session 009 CNV-6 Migration)
-_Prochaine session_ : 010 — Backlog i18n + dette (RM-1/5/6/7/8/9/10)
+_Dernière mise à jour_ : 2026-08-24 (Session 010 Cadrage RM-12/RM-4b)
+_Prochaine session_ : 011 — RM-12-1 cleanup dépendances (RM-7 étendu : node-gradle + readme.ai bundle)
 
 '''
 == RÈGLES ABSOLUES (résumé)
@@ -63,15 +64,17 @@ Publié : Maven Central (education.cccp:readme-plugin v0.0.1)
 | EPIC | Description | Statut
 | RM-0 | Bootstrap gouvernance agent | ✅ (session 000)
 | RM-1 | Migrer prompt.md → archives gouvernance (LAZY) | À FAIRE
-| RM-2 | Tests integration avec graphify-gradle | À FAIRE
+| RM-2 | Tests integration avec graphify-gradent — absorbé dans RM-12 (use case contexte augmenté) | ✅ CADUQUE (absorbé RM-12 S-010)
 | RM-3 | Release v1.0.0 Plugin Portal | À FAIRE
-| RM-4 | Support multi-langue — base i18n livrée (20 README × 10 langues, session 007), automatisation dogfooding restante | 🟡 base ✅ / auto À FAIRE
-| RM-5 | Aligner README_truth*.adoc sur les noms de tâches actuels (generateReadme, transformReadme, commitGeneratedReadme) — remplacer les occurences de processReadme et scaffoldReadme | À FAIRE
-| RM-6 | Nettoyer prompt.md (obsolète — référence com.cheroliv, anciens noms de tâches) | À FAIRE
-| RM-7 | Supprimer ou repasser en compileOnly la dépendance node-gradle (implémentation inutilisée) | À FAIRE
-| RM-8 | Traduire logs et KDoc en anglais (CommitGeneratedReadmeTask.kt, AdocSourceFile.kt) | À FAIRE
-| RM-9 | Synchroniser version PlantUML dans README_truth*.adoc (1.2024.3 → version réelle) | À FAIRE
-| RM-10 | Nettoyer les références à readme-truth.yml dans la doc (remplacer par readme.yml) | À FAIRE
+| RM-4 | Support multi-langue — base i18n livrée (20 README × 10 langues, session 007), automatisation dogfooding restante | 🟡 base ✅ / auto À FAIRE (RM-4b reframé dans RM-12)
+| RM-5 | Aligner README_truth*.adoc sur les noms de tâches actuels | À FAIRE (post RM-12-2 refonte README)
+| RM-6 | Nettoyer prompt.md (obsolète) | À FAIRE
+| RM-7 | Supprimer dépendances inutilisées — étendu : node-gradle + bundle readme.ai compileOnly mort | 🟡 À FAIRE (RM-12-1)
+| RM-8 | Traduire logs et KDoc en anglais | À FAIRE
+| RM-9 | Synchroniser version PlantUML dans README_truth*.adoc | À FAIRE (post RM-12-2)
+| RM-10 | Nettoyer les références à readme-truth.yml dans la doc | À FAIRE (post RM-12-2)
+| RM-11 | Refonte README consommateur vs plugin selon article 0124 (nouveau) | 🟡 À FAIRE (RM-12-2)
+| RM-12 | Cadrage EPIC readme-LLM + auto-traduction i18n pattern bakery (nouveau) | 🟡 À FAIRE (cadrage ✅ S-010, US-1→6 TODO)
 | CNV-6 | Migration conventions plugins education.cccp.build.* v0.0.1 (gradle-plugin + publishing) | ✅ 2026-07-03
 | Publication Maven Central 0.0.1 | nmcp, POM sans guard, codebase-contracts:0.0.2, buildscript resolutionStrategy, settings nmcp | ✅ 2026-06-11
 |===
@@ -81,6 +84,7 @@ Publié : Maven Central (education.cccp:readme-plugin v0.0.1)
 
 |===
 | # | Date | Type | Sujet | Score
+| 010 | 2026-08-24 | governance | Cadrage EPIC RM-12 (readme-LLM) + RM-4b (auto-traduction i18n pattern bakery post-SLD-8) — audit 8 constats (zéro LLM consommé, bundle readme.ai compileOnly mort, node-gradle inutilisé, README se chevauchent, 20 fichiers i18n manuels), 11 décisions (pattern post-SLD-8 codebase N1, domaine readme.llm + readme.i18n, translateReadme additive, cleanup RM-7 étendu), 7 US ~17 pts. Doc CADRAGE_EPIC_RM_I18N.adoc. Zéro code modifié — gouvernance pure pattern S-057/S-063 | 10/10
 | 009 | 2026-07-03 | dev | CNV-6 Migration — convention plugins education.cccp.build.* v0.0.1 appliquées (gradle-plugin + publishing), build.gradle.kts 270→224 (-46), compileKotlin SUCCESS. Variantes gardées : extendsFrom legacy, exclusions logback, filter scenarios | ✅ TERMINÉ
 | 008 | 2026-06-24 | refactor README | Architecture README Plugin + Consommateur — déplacement README.plugin → readme-plugin/, README.consommateurs → racine, liens i18n recréés (10 langues) | 8/10
 | 007 | 2026-06-24 | i18n | README i18n — 20 fichiers (10 langues × consommateur + plugin), switcher, badges 0.0.1, RTL AR/UR, `<YOUR_GITHUB_PAT>` préservé | 9/10
