@@ -16,9 +16,10 @@ _Session terminee_ : 008 — Architecture README Plugin + Consommateur (déplace
 _Session terminee_ : 009 — CNV-6 Migration conventions plugins education.cccp.build.* v0.0.1 ✅
 _Session terminee_ : 010 — Cadrage EPIC RM-12 (readme-LLM) + RM-4b (auto-traduction i18n pattern bakery) ✅
 _Session terminee_ : 011 — RM-12-1 cleanup dépendances (node-gradle + bundle readme.ai) + déblocage codebase 0.0.8 ✅
+_Session terminee_ : 012 — US-ROLLOUT-6 adoption version catalog ws 0.0.31 (pin settings + version dérivée ws + id inline, garde 3/3, check 83 tests 0 FAIL, mavenLocal VERT) ✅
 
-_Dernière mise à jour_ : 2026-08-24 (Session 011 RM-12-1 cleanup)
-_Prochaine session_ : 012 — RM-12-2 refonte README consommateur vs plugin selon article 0124
+_Dernière mise à jour_ : 2026-09-07 (Session 012 US-ROLLOUT-6 adoption version catalog, cross-borough MEMPHIS EPIC MEM-CAT-ROLLOUT ordre 6)
+_Prochaine session_ : 013 — RM-12-2 refonte README consommateur vs plugin selon article 0124
 
 '''
 == RÈGLES ABSOLUES (résumé)

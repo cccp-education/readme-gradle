@@ -20,7 +20,8 @@ plugins {
 }
 
 group = "education.cccp"
-version = libs.plugins.readme.get().version
+// MEM-CAT-ROLLOUT-6 (D3) — self version derived from the published workspace catalog.
+version = ws.versions.readme.plugin.get()
 
 publishingConventions {
     publicationType = "PLUGIN"
@@ -185,7 +186,8 @@ gradlePlugin {
 
     plugins {
         create("readme") {
-            id = libs.plugins.readme.get().pluginId
+            // MEM-CAT-ROLLOUT-6 — plugin id declared inline (stable publication identity, D5 hygiene).
+            id = "education.cccp.readme"
             implementationClass = "readme.ReadmePlugin"
             displayName = "README helper Plugin"
             description = """

@@ -21,6 +21,7 @@ Doc CADRAGE_EPIC_RM_I18N.adoc créé.
 
 |===
 | # | Date | Type | Sujet | Score
+| 012 | 2026-09-07 | build+test | US-ROLLOUT-6 adoption version catalog ws 0.0.31 (cross-borough MEMPHIS EPIC MEM-CAT-ROLLOUT ordre 6) — pin settings D4 + version dérivée ws D3 + id inline + garde ReadmePluginPublicationTest 3/3 (RED → GREEN, pattern CodexPluginPublicationTest S-211). Check VERT 83 tests 0 FAIL (22 unit + 5 FT + 56 cucumber). mavenLocal VERT POM 0.0.1. Zéro production modifié | 10/10
 | 011 | 2026-08-24 | dev | RM-12-1 cleanup dépendances — bump codebase 0.0.2→0.0.8 (déblocage kotlin-stdlib) + suppression readme.ai compileOnly + node-gradle + TODO mort. Check VERT 80 tests 0 FAIL. Zéro production modifié | 9/10
 | 010 | 2026-08-24 | governance | Cadrage EPIC RM-12 (readme-LLM) + RM-4b (auto-traduction i18n pattern bakery post-SLD-8) — audit 8 constats, 11 décisions, 7 US ~17 pts. Doc CADRAGE_EPIC_RM_I18N.adoc. Zéro code modifié — gouvernance pure pattern S-057/S-063 | 10/10
 | 009 | 2026-07-03 | dev | CNV-6 Migration — convention plugins education.cccp.build.* v0.0.1 (gradle-plugin + publishing), build.gradle.kts 270→224 (-46), compileKotlin SUCCESS. Variantes : extendsFrom legacy, exclusions logback, filter scenarios | ✅ TERMINÉ

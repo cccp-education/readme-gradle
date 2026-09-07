@@ -1,0 +1,61 @@
+= Session 012 — US-ROLLOUT-6 adoption version catalog (cross-borough MEMPHIS)
+:session: 012
+:date: 2026-09-07
+:borough: Chiraq (readme-plugin)
+:type: build+test
+
+== Objectif
+
+EPIC MEM-CAT-ROLLOUT (référentiel `workspace-bom/BACKLOG.adoc`) — ordre 6 :
+adoption du pattern version catalog workspace prouvé par le pilote bakery
+(S-208) et appliqué à document (S-244), codex (S-211), plantuml (S-030),
+hyperframes (S-031), runner (S-031).
+
+== État initial (audit)
+
+. `readme-plugin/build.gradle.kts:23` — `version = libs.plugins.readme.get().version`
+   dérivée du toml *local* (split-brain latent, D3 violé).
+. `readme-plugin/settings.gradle.kts` — zéro pin `ws` (D4 violé).
+. Plugin id via toml local (`libs.plugins.readme.get().pluginId`) — pas inline.
+. Catalog Central `workspace-catalog:0.0.31` a l'entrée `readme = 0.0.1`
+   (vérifié repo1 S-032, entrées `[plugins]` transportées).
+
+== Baby-step TDD strict
+
+=== RED — garde publication 3/3 FAILED
+
+`ReadmePluginPublicationTest` créé (mirror `CodexPluginPublicationTest` S-211,
+adapté : readme n'a pas de platform BOM → test 2 = pin settings ws D4) :
+
+. `plugin version matches ws catalog version` — D3 (`ws.versions.readme.plugin.get()`)
+   + hygiène D5 (toml local `readme =` vs ws catalog `readme-plugin =`).
+. `settings pins the workspace catalog` — D4 (`from("education.cccp:workspace-catalog:0.0.31")`).
+. `plugin group and id are stable for publication` — id inline `education.cccp.readme`.
+
+=== GREEN — 3/3 PASSED
+
+. `settings.gradle.kts` : pin unique `create("ws") { from("education.cccp:workspace-catalog:0.0.31") }`.
+. `build.gradle.kts` : `version = ws.versions.readme.plugin.get()` (D3 — remplace
+   la dérivation toml local).
+. `gradlePlugin.plugins.create("readme")` : `id = "education.cccp.readme"` inline.
+
+== Gates
+
+. `test --tests ReadmePluginPublicationTest` — 3/3 PASSED (GREEN).
+. `check` — BUILD SUCCESSFUL 2m14s : 22 unit (+3 garde) + 5 functional +
+   56 cucumber = 83 tests, 0 failure (baseline 80 → +3).
+. `publishToMavenLocal` — VERT, POM 0.0.1 version dérivée ws vérifié
+   (`~/.m2/repository/education/cccp/readme-plugin/0.0.1/`).
+
+== Impact
+
+. Version plugin = source unique de vérité cross-borough (`ws.versions.readme.plugin`).
+. Split-brain latent toml local / catalog éliminé — les bumps futurs se font
+   côté MEMPHIS uniquement.
+. Le pattern `ws` est résolvable (build + publication OK avec catalog Central).
+
+== Non-objectifs
+
+. Zéro code production modifié (3 fichiers build/settings + 1 test).
+. Pas de publication Central (bump version non requis — 0.0.1 inchangé).
+. Pas de bump BOM MEMPHIS (readme 0.0.1 déjà aligné).
