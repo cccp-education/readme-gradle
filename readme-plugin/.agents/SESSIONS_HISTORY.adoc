@@ -1,5 +1,6 @@
 = Sessions History — Readme Plugin
 
+
 == Session 011 (2026-08-24) — RM-12-1 cleanup dépendances
 
 US-1 EPIC RM-12 exécutée (baby-step, gate non-régression VERTE).
