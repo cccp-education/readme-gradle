@@ -2,6 +2,7 @@
 :toc:
 
 _Règles absolues_ : voir `AGENT.adoc`
+_Derniere mise a jour_ : 2026-10-11 (Session 012 — re-pin catalog ws `0.0.76 → 0.0.78`, rollout MEMPHIS 0.0.78 ; compile VERT)
 _Projet_ : readme-gradle — plugin Gradle README.adoc + PlantUML (N2)
 _Borough_ : Chiraq 🟤 — 13ème borough
 _Ontologie spatiale_ : voir `configuration/.agents/AGENT_GOVERNANCE.adoc`
