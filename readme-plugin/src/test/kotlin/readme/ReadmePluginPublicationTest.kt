@@ -50,8 +50,8 @@ class ReadmePluginPublicationTest {
 
         // MEM-CAT-ROLLOUT-6 (D4) — single pin per borough, published workspace catalog.
         assertThat(settings)
-            .withFailMessage("settings.gradle.kts must pin the published workspace catalog (education.cccp:workspace-catalog:0.0.31)")
-            .contains("""from("education.cccp:workspace-catalog:0.0.31")""")
+            .withFailMessage("settings.gradle.kts must pin the published workspace catalog (education.cccp:workspace-catalog:0.0.116)")
+            .contains("""from("education.cccp:workspace-catalog:0.0.116")""")
     }
 
     @Test
