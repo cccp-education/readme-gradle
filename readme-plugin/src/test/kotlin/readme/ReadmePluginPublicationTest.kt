@@ -37,7 +37,10 @@ class ReadmePluginPublicationTest {
         // Hygiene (D5): local toml self version must match the ws catalog version —
         // the ws catalog (workspace-bom repo) is the cross-borough source of truth.
         val pluginCatalogVersion = readmeVersionFrom(pluginDir.resolve("gradle/libs.versions.toml").readText(UTF_8))
-        val wsCatalogVersion = readmeVersionFrom(wsCatalogToml())
+        // Injected by Gradle from the pinned published catalog (CI has no sibling checkout).
+        val wsCatalogVersion =
+            System.getProperty("readme.publishedCatalog.version")
+                ?: readmeVersionFrom(wsCatalogToml())
 
         assertThat(pluginCatalogVersion)
             .withFailMessage("plugin catalog readme version ($pluginCatalogVersion) must match ws catalog readme-plugin version ($wsCatalogVersion)")

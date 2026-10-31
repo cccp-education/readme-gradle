@@ -62,6 +62,11 @@ dependencies {
 tasks.withType<Test> {
     useJUnitPlatform()
     jvmArgs("-XX:+EnableDynamicAgentLoading")
+    // Publication hygiene (D5) — the *published* catalog version is injected by
+    // Gradle instead of read from the sibling worktree (racy across sessions and
+    // absent in CI, which clones only this repository). Patron graphify D5-RACE
+    // (S-029). The test falls back to the sibling toml only for local runs.
+    systemProperty("readme.publishedCatalog.version", ws.versions.readme.plugin.get())
     testLogging {
         events("passed", "skipped", "failed")
         showStandardStreams = true
