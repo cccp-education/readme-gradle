@@ -20,12 +20,12 @@ import java.io.File
 data class ReadmePlantUmlConfig(
     val source: SourceConfig = SourceConfig(),
     val output: OutputConfig = OutputConfig(),
-    val git:    GitConfig    = GitConfig()
+    val git: GitConfig = GitConfig(),
 ) {
     companion object {
-
-        private val MAPPER: ObjectMapper = ObjectMapper(YAMLFactory())
-            .registerKotlinModule()
+        private val MAPPER: ObjectMapper =
+            ObjectMapper(YAMLFactory())
+                .registerKotlinModule()
 
         const val CONFIG_FILE_NAME = "readme.yml"
 
@@ -40,12 +40,13 @@ data class ReadmePlantUmlConfig(
 
             // File present but invalid YAML — warn and fall back to defaults
             return try {
-                MAPPER.readValue(configFile, ReadmePlantUmlConfig::class.java)
+                MAPPER
+                    .readValue(configFile, ReadmePlantUmlConfig::class.java)
                     .also { println("[readme] Config loaded: ${configFile.absolutePath}") }
             } catch (e: Exception) {
                 println(
                     "[readme] WARNING: $CONFIG_FILE_NAME contains invalid YAML — " +
-                            "using defaults (${e.message})"
+                        "using defaults (${e.message})",
                 )
                 ReadmePlantUmlConfig()
             }
@@ -54,26 +55,26 @@ data class ReadmePlantUmlConfig(
 }
 
 data class SourceConfig(
-    val dir:         String = ".",
-    val defaultLang: String = "en"
+    val dir: String = ".",
+    val defaultLang: String = "en",
 )
 
 data class OutputConfig(
-    val imgDir: String = ".github/workflows/readmes/images"
+    val imgDir: String = ".github/workflows/readmes/images",
 )
 
 data class GitConfig(
-    val userName:        String       = "github-actions[bot]",
-    val userEmail:       String       = "github-actions[bot]@users.noreply.github.com",
-    val commitMessage:   String       = "chore: generate readme [skip ci]",
-    val token:           String       = "",
-    val watchedBranches: List<String> = listOf("main", "master")
+    val userName: String = "github-actions[bot]",
+    val userEmail: String = "github-actions[bot]@users.noreply.github.com",
+    val commitMessage: String = "chore: generate readme [skip ci]",
+    val token: String = "",
+    val watchedBranches: List<String> = listOf("main", "master"),
 ) {
     fun resolvedToken(): String =
         token.takeIf { it.isNotBlank() && it != "<YOUR_GITHUB_PAT>" }
             ?: error(
                 "GitHub token is empty or still a placeholder in readme.yml.\n" +
-                        "→ Check the README_GRADLE_PLUGIN secret in :\n" +
-                        "   GitHub → Settings → Secrets and variables → Actions"
+                    "→ Check the README_GRADLE_PLUGIN secret in :\n" +
+                    "   GitHub → Settings → Secrets and variables → Actions",
             )
 }

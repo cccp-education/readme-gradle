@@ -2,18 +2,21 @@
 
 package readme.scenarios
 
-import io.cucumber.datatable.DataTable
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import org.assertj.core.api.Assertions.assertThat
 import java.io.File
 
-class ProcessSteps(private val world: ReadMeWorld) {
-
+class ProcessSteps(
+    private val world: ReadMeWorld,
+) {
     // ── Given ─────────────────────────────────────────────────────────────────
 
     @Given("the file {string} exists with the following content:")
-    fun givenFileExistsWithDocString(relativePath: String, content: String) {
+    fun givenFileExistsWithDocString(
+        relativePath: String,
+        content: String,
+    ) {
         world.writeProjectFile(relativePath, content.trimIndent())
     }
 
@@ -48,8 +51,9 @@ class ProcessSteps(private val world: ReadMeWorld) {
 
     @Given("the project is nested under a git root")
     fun givenProjectNestedUnderGitRoot() {
-        val currentProjectDir = world.projectDir
-            ?: error("Project directory must be initialized before nesting under git root")
+        val currentProjectDir =
+            world.projectDir
+                ?: error("Project directory must be initialized before nesting under git root")
 
         // Create a fake git root one level above the current projectDir
         val gitRoot = currentProjectDir.parentFile
@@ -62,14 +66,20 @@ class ProcessSteps(private val world: ReadMeWorld) {
     // ── Then ──────────────────────────────────────────────────────────────────
 
     @Then("the file {string} should contain {string}")
-    fun thenFileContains(relativePath: String, expected: String) {
+    fun thenFileContains(
+        relativePath: String,
+        expected: String,
+    ) {
         assertThat(world.readProjectFile(relativePath))
             .describedAs("Expected $relativePath to contain: $expected")
             .contains(expected)
     }
 
     @Then("the file {string} should not contain {string}")
-    fun thenFileNotContains(relativePath: String, unexpected: String) {
+    fun thenFileNotContains(
+        relativePath: String,
+        unexpected: String,
+    ) {
         assertThat(world.readProjectFile(relativePath))
             .describedAs("Expected $relativePath to NOT contain: $unexpected")
             .doesNotContain(unexpected)
@@ -84,11 +94,12 @@ class ProcessSteps(private val world: ReadMeWorld) {
 
     @Then("the image file should exist at the git root {string}")
     fun thenImageExistsAtGitRoot(relativePath: String) {
-        val gitRoot = world.gitRoot
-            ?: error(
-                "No git root recorded — " +
-                        "did you use 'the project is nested under a git root'?"
-            )
+        val gitRoot =
+            world.gitRoot
+                ?: error(
+                    "No git root recorded — " +
+                        "did you use 'the project is nested under a git root'?",
+                )
         val imageFile = File(gitRoot, relativePath)
         assertThat(imageFile)
             .describedAs("Expected image to exist at git root: ${imageFile.absolutePath}")
@@ -96,7 +107,10 @@ class ProcessSteps(private val world: ReadMeWorld) {
     }
 
     @Then("the file {string} should contain the following content:")
-    fun thenFileContainsDocString(relativePath: String, expected: String) {
+    fun thenFileContainsDocString(
+        relativePath: String,
+        expected: String,
+    ) {
         assertThat(world.readProjectFile(relativePath))
             .describedAs("Expected $relativePath to contain docstring content")
             .contains(expected.trimIndent())
@@ -108,11 +122,15 @@ class ProcessSteps(private val world: ReadMeWorld) {
      * or if the order is wrong.
      */
     @Then("the build log should contain {string} before {string}")
-    fun thenLogContainsBefore(first: String, second: String) {
-        val output = world.buildResult?.output
-            ?: error("No build result available — did the task run?")
+    fun thenLogContainsBefore(
+        first: String,
+        second: String,
+    ) {
+        val output =
+            world.buildResult?.output
+                ?: error("No build result available — did the task run?")
 
-        val idxFirst  = output.indexOf(first)
+        val idxFirst = output.indexOf(first)
         val idxSecond = output.indexOf(second)
 
         assertThat(idxFirst)
@@ -124,8 +142,7 @@ class ProcessSteps(private val world: ReadMeWorld) {
         assertThat(idxFirst)
             .describedAs(
                 "Expected '$first' (idx=$idxFirst) to appear " +
-                "before '$second' (idx=$idxSecond) in build log"
-            )
-            .isLessThan(idxSecond)
+                    "before '$second' (idx=$idxSecond) in build log",
+            ).isLessThan(idxSecond)
     }
 }

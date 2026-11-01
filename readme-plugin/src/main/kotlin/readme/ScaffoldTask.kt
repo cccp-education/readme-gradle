@@ -2,7 +2,11 @@ package readme
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.tasks.*
+import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
+import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.UntrackedTask
 import java.io.File
 
 /**
@@ -26,14 +30,13 @@ import java.io.File
  */
 @UntrackedTask(because = "Scaffolding — always checked, never overwritten")
 abstract class ScaffoldTask : DefaultTask() {
-
     @get:InputDirectory
     @get:PathSensitive(PathSensitivity.RELATIVE)
     abstract val projectDir: DirectoryProperty
 
     @TaskAction
     fun scaffold() {
-        val root   = projectDir.get().asFile
+        val root = projectDir.get().asFile
         val config = ReadmePlantUmlConfig.load(root)
 
         scaffoldConfig(root)
@@ -56,7 +59,7 @@ abstract class ScaffoldTask : DefaultTask() {
     }
 
     private fun scaffoldWorkflow(root: File) {
-        val workflowDir  = File(root, ".github/workflows").also { it.mkdirs() }
+        val workflowDir = File(root, ".github/workflows").also { it.mkdirs() }
         val workflowFile = File(workflowDir, "readme_action.yml")
 
         if (workflowFile.exists()) {
@@ -71,22 +74,28 @@ abstract class ScaffoldTask : DefaultTask() {
 
     // ── Validation ────────────────────────────────────────────────────────────
 
-    private fun validateConfig(root: File, config: ReadmePlantUmlConfig) {
+    private fun validateConfig(
+        root: File,
+        config: ReadmePlantUmlConfig,
+    ) {
         validateSourceDir(root, config)
         validateDefaultLang(config)
         validateImgDir(root, config)
         validateGitConfig(config)
     }
 
-    private fun validateSourceDir(root: File, config: ReadmePlantUmlConfig) {
+    private fun validateSourceDir(
+        root: File,
+        config: ReadmePlantUmlConfig,
+    ) {
         val sourceDir = File(root, config.source.dir)
         if (!sourceDir.exists()) {
             logger.error(
                 "[ERROR] source.dir does not exist: ${config.source.dir}\n" +
-                "→ Update 'source.dir' in readme.yml to a valid path"
+                    "→ Update 'source.dir' in readme.yml to a valid path",
             )
             throw IllegalStateException(
-                "source.dir does not exist: ${config.source.dir}"
+                "source.dir does not exist: ${config.source.dir}",
             )
         }
         logger.lifecycle("✔ [INFO]  source.dir         — OK (${config.source.dir})")
@@ -95,20 +104,23 @@ abstract class ScaffoldTask : DefaultTask() {
     private fun validateDefaultLang(config: ReadmePlantUmlConfig) {
         if (config.source.defaultLang.isBlank()) {
             logger.lifecycle(
-                "⚠ [INFO]  defaultLang is empty — falling back to default lang: en"
+                "⚠ [INFO]  defaultLang is empty — falling back to default lang: en",
             )
         } else {
             logger.lifecycle(
-                "✔ [INFO]  defaultLang        — OK (${config.source.defaultLang})"
+                "✔ [INFO]  defaultLang        — OK (${config.source.defaultLang})",
             )
         }
     }
 
-    private fun validateImgDir(root: File, config: ReadmePlantUmlConfig) {
+    private fun validateImgDir(
+        root: File,
+        config: ReadmePlantUmlConfig,
+    ) {
         if (config.output.imgDir.isBlank()) {
             logger.lifecycle(
                 "⚠ [INFO]  imgDir is empty — falling back to default imgDir:" +
-                " .github/workflows/readmes/images"
+                    " .github/workflows/readmes/images",
             )
             return
         }
@@ -119,10 +131,10 @@ abstract class ScaffoldTask : DefaultTask() {
         if (!resolvedImgDir.exists() && !resolvedImgDir.mkdirs()) {
             logger.error(
                 "[ERROR] output.imgDir cannot be created: ${resolvedImgDir.absolutePath}\n" +
-                "→ Check parent directory permissions"
+                    "→ Check parent directory permissions",
             )
             throw IllegalStateException(
-                "output.imgDir cannot be created: ${resolvedImgDir.absolutePath}"
+                "output.imgDir cannot be created: ${resolvedImgDir.absolutePath}",
             )
         }
 
@@ -130,10 +142,10 @@ abstract class ScaffoldTask : DefaultTask() {
         if (!resolvedImgDir.canWrite()) {
             logger.error(
                 "[ERROR] output.imgDir is not writable: ${resolvedImgDir.absolutePath}\n" +
-                "→ Check directory permissions"
+                    "→ Check directory permissions",
             )
             throw IllegalStateException(
-                "output.imgDir is not writable: ${resolvedImgDir.absolutePath}"
+                "output.imgDir is not writable: ${resolvedImgDir.absolutePath}",
             )
         }
 
@@ -151,29 +163,29 @@ abstract class ScaffoldTask : DefaultTask() {
             is GitValidationResult.TokenPlaceholder -> {
                 logger.warn(
                     "[WARN]  git.token is still a placeholder — " +
-                    "replace <YOUR_GITHUB_PAT> with a real token\n" +
-                    "→ commitGeneratedReadme will fail until token is set"
+                        "replace <YOUR_GITHUB_PAT> with a real token\n" +
+                        "→ commitGeneratedReadme will fail until token is set",
                 )
             }
             is GitValidationResult.Unreachable -> {
                 logger.warn(
                     "[WARN]  GitHub is unreachable — " +
-                    "remote validation skipped\n" +
-                    "→ transformReadme remains fully operational"
+                        "remote validation skipped\n" +
+                        "→ transformReadme remains fully operational",
                 )
             }
             is GitValidationResult.RepositoryNotFound -> {
                 logger.warn(
                     "[WARN]  repository not found — " +
-                    "check the origin remote in your local .git config\n" +
-                    "→ commitGeneratedReadme will fail"
+                        "check the origin remote in your local .git config\n" +
+                        "→ commitGeneratedReadme will fail",
                 )
             }
             is GitValidationResult.InsufficientPushRights -> {
                 logger.warn(
                     "[WARN]  push — insufficient rights — " +
-                    "token does not have contents:write permission\n" +
-                    "→ commitGeneratedReadme will fail"
+                        "token does not have contents:write permission\n" +
+                        "→ commitGeneratedReadme will fail",
                 )
             }
         }
@@ -186,17 +198,18 @@ abstract class ScaffoldTask : DefaultTask() {
      * Internal test property: -Preadme.git.validator.mock=<r>
      */
     private fun resolveMockValidator(): GitRemoteValidator? {
-        val mockValue = project.findProperty("readme.git.validator.mock")
-            as? String ?: return null
+        val mockValue =
+            project.findProperty("readme.git.validator.mock")
+                as? String ?: return null
 
         logger.lifecycle("[INFO] git remote validator mock active — result: $mockValue")
 
         return GitRemoteValidator { _ ->
             when (mockValue) {
-                "VALID"                    -> GitValidationResult.Valid
-                "TOKEN_PLACEHOLDER"        -> GitValidationResult.TokenPlaceholder
-                "UNREACHABLE"              -> GitValidationResult.Unreachable
-                "REPOSITORY_NOT_FOUND"     -> GitValidationResult.RepositoryNotFound
+                "VALID" -> GitValidationResult.Valid
+                "TOKEN_PLACEHOLDER" -> GitValidationResult.TokenPlaceholder
+                "UNREACHABLE" -> GitValidationResult.Unreachable
+                "REPOSITORY_NOT_FOUND" -> GitValidationResult.RepositoryNotFound
                 "INSUFFICIENT_PUSH_RIGHTS" -> GitValidationResult.InsufficientPushRights
                 else -> error("Unknown readme.git.validator.mock value: $mockValue")
             }
@@ -206,7 +219,8 @@ abstract class ScaffoldTask : DefaultTask() {
     // ── Templates ─────────────────────────────────────────────────────────────
 
     companion object {
-        val CONFIG_TEMPLATE = """
+        val CONFIG_TEMPLATE =
+            """
             # ─────────────────────────────────────────────────────────────────
             # readme.yml — Plugin configuration
             #
@@ -237,9 +251,10 @@ abstract class ScaffoldTask : DefaultTask() {
               watchedBranches:
                 - main
                 - master
-        """.trimIndent()
+            """.trimIndent()
 
-        private val WORKFLOW_TEMPLATE = """
+        private val WORKFLOW_TEMPLATE =
+            """
             name: Generate README from truth sources
 
             on:
@@ -289,6 +304,6 @@ abstract class ScaffoldTask : DefaultTask() {
                       git diff HEAD~1 --name-only 2>/dev/null | while read f; do
                         echo "- \`${'$'}f\`" >> ${'$'}GITHUB_STEP_SUMMARY
                       done || echo "- *(first run)*" >> ${'$'}GITHUB_STEP_SUMMARY
-        """.trimIndent()
+            """.trimIndent()
     }
 }

@@ -22,7 +22,6 @@ import java.io.File
  * the same way. The public sealed boundary is unchanged.
  */
 class JGitRemoteValidator : GitRemoteValidator {
-
     override fun validate(config: GitConfig): GitValidationResult {
         if (config.token.isBlank() || config.token == "<YOUR_GITHUB_PAT>") {
             return GitValidationResult.TokenPlaceholder
@@ -43,17 +42,19 @@ class JGitRemoteValidator : GitRemoteValidator {
         val repoUrl = resolveOriginUrl() ?: return GitValidationResult.Unreachable.left()
 
         val credentials = UsernamePasswordCredentialsProvider("x-access-token", config.token)
-        return Either.catch {
-            Git.lsRemoteRepository()
-                .setRemote(repoUrl)
-                .setCredentialsProvider(credentials)
-                .call()
-            // TODO: verify push rights via GitHub API (contents:write scope)
-            Unit
-        }.fold(
-            ifLeft = { throwable -> throwable.toValidationResult().left() },
-            ifRight = { Unit.right() },
-        )
+        return Either
+            .catch {
+                Git
+                    .lsRemoteRepository()
+                    .setRemote(repoUrl)
+                    .setCredentialsProvider(credentials)
+                    .call()
+                // TODO: verify push rights via GitHub API (contents:write scope)
+                Unit
+            }.fold(
+                ifLeft = { throwable -> throwable.toValidationResult().left() },
+                ifRight = { Unit.right() },
+            )
     }
 
     /** Maps a JGit failure to the sealed validation vocabulary. */
@@ -73,38 +74,41 @@ class JGitRemoteValidator : GitRemoteValidator {
      * or the remote is unavailable. Exception capture is a value, not a throw.
      */
     private fun resolveOriginUrl(): String? {
-        val gitRoot = Either.catch { GitUtils.findGitRoot(File(".").canonicalFile) }
-            .fold(
+        val gitRoot =
+            Either
+                .catch { GitUtils.findGitRoot(File(".").canonicalFile) }
+                .fold(
+                    ifLeft = {
+                        println("[readme] WARNING: failed to locate the git root — ${it.message}")
+                        null
+                    },
+                    ifRight = { it },
+                )
+                ?: run {
+                    println("[readme] WARNING: no .git directory found in filesystem hierarchy — remote unreachable")
+                    return null
+                }
+
+        return Either
+            .catch {
+                Git.open(gitRoot).use { git ->
+                    git.repository.config.getString("remote", "origin", "url")
+                }
+            }.fold(
                 ifLeft = {
-                    println("[readme] WARNING: failed to locate the git root — ${it.message}")
+                    println("[readme] WARNING: failed to read .git config at ${gitRoot.absolutePath} — ${it.message}")
                     null
                 },
-                ifRight = { it },
+                ifRight = { url ->
+                    url?.takeIf { it.isNotBlank() }
+                        ?: run {
+                            println(
+                                "[readme] WARNING: no 'origin' remote configured in " +
+                                    "${gitRoot.absolutePath}/.git/config — remote unreachable",
+                            )
+                            null
+                        }
+                },
             )
-            ?: run {
-                println("[readme] WARNING: no .git directory found in filesystem hierarchy — remote unreachable")
-                return null
-            }
-
-        return Either.catch {
-            Git.open(gitRoot).use { git ->
-                git.repository.config.getString("remote", "origin", "url")
-            }
-        }.fold(
-            ifLeft = {
-                println("[readme] WARNING: failed to read .git config at ${gitRoot.absolutePath} — ${it.message}")
-                null
-            },
-            ifRight = { url ->
-                url?.takeIf { it.isNotBlank() }
-                    ?: run {
-                        println(
-                            "[readme] WARNING: no 'origin' remote configured in " +
-                                "${gitRoot.absolutePath}/.git/config — remote unreachable"
-                        )
-                        null
-                    }
-            },
-        )
     }
 }

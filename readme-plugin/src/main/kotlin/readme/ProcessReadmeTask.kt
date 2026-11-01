@@ -4,13 +4,18 @@ import net.sourceforge.plantuml.SourceStringReader
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.tasks.*
+import org.gradle.api.tasks.CacheableTask
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
+import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.io.FileOutputStream
 
 @CacheableTask
 abstract class ProcessReadmeTask : DefaultTask() {
-
     @get:InputDirectory
     @get:PathSensitive(PathSensitivity.RELATIVE)
     abstract val sourceDir: DirectoryProperty
@@ -29,22 +34,24 @@ abstract class ProcessReadmeTask : DefaultTask() {
     //   [plantuml, architecture, png]    → name = "architecture"
     //   [plantuml, "my diagram", png]    → name = "my diagram"
     // Capture group 2 ensures opening and closing delimiter match exactly.
-    private val plantUmlBlockRegex = Regex(
-        """\[plantuml,\s*\"?([^,\]"]+)\"?[^\]]*]\s*\n(-{4,}|`{4,}|\.{4,})\n(.*?)\n\2""",
-        RegexOption.DOT_MATCHES_ALL
-    )
+    private val plantUmlBlockRegex =
+        Regex(
+            """\[plantuml,\s*\"?([^,\]"]+)\"?[^\]]*]\s*\n(-{4,}|`{4,}|\.{4,})\n(.*?)\n\2""",
+            RegexOption.DOT_MATCHES_ALL,
+        )
 
     // Rewrites inter-language links in all three AsciiDoc forms:
     //   href="README_truth_fr.adoc"    → href="README_fr.adoc"
     //   link:README_truth_fr.adoc[...] → link:README_fr.adoc[...]
     //   xref:README_truth_fr.adoc[...] → xref:README_fr.adoc[...]
-    private val langLinkRegex = Regex(
-        """(href="|link:|xref:)([^"\[]*README_truth(?:_[a-z]{2})?\.adoc)"""
-    )
+    private val langLinkRegex =
+        Regex(
+            """(href="|link:|xref:)([^"\[]*README_truth(?:_[a-z]{2})?\.adoc)""",
+        )
 
     @TaskAction
     fun process() {
-        val root    = sourceDir.get().asFile
+        val root = sourceDir.get().asFile
         val sources = AdocSourceFile.scanDir(root)
 
         if (sources.isEmpty()) {
@@ -62,83 +69,86 @@ abstract class ProcessReadmeTask : DefaultTask() {
         // (unreliable when the Gradle daemon runs as root on Linux).
         if (isUnreadableMock(src.file.name) || !src.file.canRead()) {
             logger.warn(
-                "[WARN]  ${src.file.name} is not readable — skipping this source file"
+                "[WARN]  ${src.file.name} is not readable — skipping this source file",
             )
             return
         }
 
-        val lang    = src.effectiveLang(defaultLang.get())
+        val lang = src.effectiveLang(defaultLang.get())
         val content = src.file.readText()
 
         logger.lifecycle("╔═ Processing : ${src.file.name}  [lang=$lang]")
 
         val buildLangDir = File(buildImgDir.get().asFile, lang).also { it.mkdirs() }
-        val repoLangDir  = File(imgDir.get().asFile,      lang).also { it.mkdirs() }
+        val repoLangDir = File(imgDir.get().asFile, lang).also { it.mkdirs() }
 
         // Track seen diagram names to detect duplicates within this file
         val seenDiagramNames = mutableSetOf<String>()
         var diagramCount = 0
 
         // ── Step 1: replace PlantUML blocks ───────────────────────────────────
-        val afterPlantuml = plantUmlBlockRegex.replace(content) { match ->
-            val name = match.groupValues[1].trim()
-            val body = match.groupValues[3]
-            diagramCount++
+        val afterPlantuml =
+            plantUmlBlockRegex.replace(content) { match ->
+                val name = match.groupValues[1].trim()
+                val body = match.groupValues[3]
+                diagramCount++
 
-            // Warn on duplicate diagram name within the same source file
-            if (!seenDiagramNames.add(name)) {
-                logger.warn(
-                    "[WARN]  $name — duplicate diagram name in ${src.file.name}, " +
-                            "previous PNG will be overwritten"
-                )
+                // Warn on duplicate diagram name within the same source file
+                if (!seenDiagramNames.add(name)) {
+                    logger.warn(
+                        "[WARN]  $name — duplicate diagram name in ${src.file.name}, " +
+                            "previous PNG will be overwritten",
+                    )
+                }
+
+                val buildPng = File(buildLangDir, "$name.png")
+                val generated = generatePng(body, buildPng, name)
+                logger.lifecycle("║  PNG  : ${buildPng.path}")
+
+                if (!generated) {
+                    // generatePng logged the warning already — skip copy and image:: replacement
+                    return@replace match.value
+                }
+
+                val repoPng = File(repoLangDir, "$name.png")
+                buildPng.copyTo(repoPng, overwrite = true)
+                logger.lifecycle("║  COPY : ${repoPng.path}")
+
+                // Compute path relative to the source file using Path.relativize()
+                // so it works correctly when the project is nested under the git root.
+                val relPath =
+                    src.file.parentFile
+                        .toPath()
+                        .relativize(
+                            File(imgDir.get().asFile, "$lang/$name.png").toPath(),
+                        ).toString()
+                        .replace('\\', '/') // normalize separators on Windows
+
+                "image::$relPath[$name]"
             }
-
-            val buildPng = File(buildLangDir, "${name}.png")
-            val generated = generatePng(body, buildPng, name)
-            logger.lifecycle("║  PNG  : ${buildPng.path}")
-
-            if (!generated) {
-                // generatePng logged the warning already — skip copy and image:: replacement
-                return@replace match.value
-            }
-
-            val repoPng = File(repoLangDir, "${name}.png")
-            buildPng.copyTo(repoPng, overwrite = true)
-            logger.lifecycle("║  COPY : ${repoPng.path}")
-
-            // Compute path relative to the source file using Path.relativize()
-            // so it works correctly when the project is nested under the git root.
-            val relPath = src.file.parentFile.toPath()
-                .relativize(
-                    File(imgDir.get().asFile, "$lang/${name}.png").toPath()
-                )
-                .toString()
-                .replace('\\', '/')  // normalize separators on Windows
-
-            "image::${relPath}[${name}]"
-        }
 
         // ── Step 2: rewrite inter-language links ──────────────────────────────
         // README_truth.adoc    → link:README_truth_fr.adoc → link:README_fr.adoc
         // README_truth_fr.adoc → link:README_truth.adoc    → link:README.adoc
-        val rewritten = langLinkRegex.replace(afterPlantuml) { match ->
-            val prefix       = match.groupValues[1]
-            val linkedSource = match.groupValues[2]
+        val rewritten =
+            langLinkRegex.replace(afterPlantuml) { match ->
+                val prefix = match.groupValues[1]
+                val linkedSource = match.groupValues[2]
 
-            // Warn if the linked truth file does not exist in the project
-            val linkedFile = File(src.file.parentFile, linkedSource)
-            if (!linkedFile.exists()) {
-                logger.warn(
-                    "[WARN]  $linkedSource does not exist — " +
-                            "link rewritten but target truth file is missing"
-                )
+                // Warn if the linked truth file does not exist in the project
+                val linkedFile = File(src.file.parentFile, linkedSource)
+                if (!linkedFile.exists()) {
+                    logger.warn(
+                        "[WARN]  $linkedSource does not exist — " +
+                            "link rewritten but target truth file is missing",
+                    )
+                }
+
+                val generatedName = AdocSourceFile(File(linkedSource)).generatedFileName()
+
+                logger.lifecycle("║  LINK : $linkedSource → $generatedName")
+                "${prefix}$generatedName"
             }
-
-            val generatedName = AdocSourceFile(File(linkedSource)).generatedFileName()
-
-            logger.lifecycle("║  LINK : $linkedSource → $generatedName")
-            "${prefix}${generatedName}"
-        }
 
         // ── Step 3: write generated file ──────────────────────────────────────
         val generated = src.generatedFile()
@@ -149,7 +159,7 @@ abstract class ProcessReadmeTask : DefaultTask() {
         // (unreliable when the Gradle daemon runs as root on Linux).
         if (isReadOnlyMock(generated.name) || (generated.exists() && !generated.canWrite())) {
             logger.warn(
-                "[WARN]  ${generated.name} is read-only — skipping write for ${src.file.name}"
+                "[WARN]  ${generated.name} is read-only — skipping write for ${src.file.name}",
             )
             return
         }
@@ -166,7 +176,8 @@ abstract class ProcessReadmeTask : DefaultTask() {
      * Always returns false in production — property is absent.
      */
     private fun isUnreadableMock(fileName: String): Boolean =
-        project.findProperty("readme.process.unreadable.files")
+        project
+            .findProperty("readme.process.unreadable.files")
             ?.toString()
             ?.split(",")
             ?.any { it.trim() == fileName }
@@ -178,7 +189,8 @@ abstract class ProcessReadmeTask : DefaultTask() {
      * Always returns false in production — property is absent.
      */
     private fun isReadOnlyMock(fileName: String): Boolean =
-        project.findProperty("readme.process.readonly.files")
+        project
+            .findProperty("readme.process.readonly.files")
             ?.toString()
             ?.split(",")
             ?.any { it.trim() == fileName }
@@ -198,17 +210,27 @@ abstract class ProcessReadmeTask : DefaultTask() {
      * the original PlantUML block in the generated README instead of
      * replacing it with a broken image:: reference.
      */
-    private fun generatePng(body: String, output: File, name: String): Boolean {
-        val src = if (body.trim().startsWith("@startuml")) body
-        else "@startuml\n$body\n@enduml"
+    private fun generatePng(
+        body: String,
+        output: File,
+        name: String,
+    ): Boolean {
+        val src =
+            if (body.trim().startsWith("@startuml")) {
+                body
+            } else {
+                "@startuml\n$body\n@enduml"
+            }
 
         val reader = SourceStringReader(src)
-        val description = FileOutputStream(output).use { fos ->
-            reader.outputImage(fos)?.description
-        }
+        val description =
+            FileOutputStream(output).use { fos ->
+                reader.outputImage(fos)?.description
+            }
 
         // Check 1: description explicitly reports an error
-        val descriptionIndicatesError = description != null &&
+        val descriptionIndicatesError =
+            description != null &&
                 description.contains("error", ignoreCase = true)
 
         // Check 2: output file is too small to be a valid PNG
@@ -217,8 +239,8 @@ abstract class ProcessReadmeTask : DefaultTask() {
         return if (descriptionIndicatesError || outputTooSmall) {
             logger.warn(
                 "[WARN]  $name — invalid PlantUML syntax" +
-                        (if (description != null) ": $description" else "") +
-                        " — block preserved as-is in generated README"
+                    (if (description != null) ": $description" else "") +
+                    " — block preserved as-is in generated README",
             )
             output.delete() // remove the corrupt/error PNG
             false

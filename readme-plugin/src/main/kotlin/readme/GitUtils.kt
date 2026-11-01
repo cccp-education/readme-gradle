@@ -8,7 +8,6 @@ import java.io.File
  * without duplicating the directory walk logic.
  */
 object GitUtils {
-
     /**
      * Walks up the filesystem from [startDir] to find the directory
      * containing the .git folder.
@@ -52,10 +51,10 @@ object GitUtils {
     fun resolveImgDir(
         projectDir: File,
         imgDirConfig: String,
-        maxLevels: Int = 3
+        maxLevels: Int = 3,
     ): File {
         val canonical = projectDir.canonicalFile
-        val gitRoot   = findGitRootBounded(canonical, maxLevels)
+        val gitRoot = findGitRootBounded(canonical, maxLevels)
         val resolvedRoot = gitRoot ?: canonical
         return File(resolvedRoot, imgDirConfig)
     }
@@ -65,8 +64,11 @@ object GitUtils {
      * stopping after [maxLevels] levels above [startDir].
      * Returns null if no .git is found within the bounded range.
      */
-    fun findGitRootBounded(startDir: File, maxLevels: Int): File? {
-        var dir   = startDir.canonicalFile
+    fun findGitRootBounded(
+        startDir: File,
+        maxLevels: Int,
+    ): File? {
+        var dir = startDir.canonicalFile
         var level = 0
         while (level <= maxLevels && dir.parentFile != null) {
             if (File(dir, ".git").exists()) return dir

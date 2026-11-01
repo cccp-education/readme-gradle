@@ -15,8 +15,8 @@ class CanaryReadmeGradlePluginTest {
         project.plugins.apply("education.cccp.readme")
 
         // Verify the result
-        assertNotNull(project.tasks.findByName("transformReadme"))       // ← tâche réelle
-        assertNotNull(project.tasks.findByName("generateReadme"))      // ← tâche réelle
+        assertNotNull(project.tasks.findByName("transformReadme")) // ← tâche réelle
+        assertNotNull(project.tasks.findByName("generateReadme")) // ← tâche réelle
 //        assertNotNull(project.tasks.findByName("tasks"))
     }
 }

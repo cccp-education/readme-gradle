@@ -24,13 +24,19 @@ class ReadmePluginPublicationTest {
     @Test
     fun `plugin version matches ws catalog version`() {
         val buildScript = pluginDir.resolve("build.gradle.kts").readText(UTF_8)
-        val versionLine =
+        // S-327 (MEM-LINT-ADOPTION) — ktlint reflows the assignment across several
+        // lines, so the guard compares the declaration whitespace-insensitively
+        // instead of matching a single source line (S-244/S-325 F34 trap).
+        val versionDeclaration =
             buildScript
-                .lineSequence()
-                .first { it.trimStart().startsWith("version =") }
+                .lines()
+                .dropWhile { !it.trimStart().startsWith("version =") }
+                .takeWhile { it.isNotBlank() }
+                .joinToString("")
+                .replace(Regex("\\s+"), "")
 
         // MEM-CAT-ROLLOUT-6 (D3) — self version derived from the published workspace catalog.
-        assertThat(versionLine)
+        assertThat(versionDeclaration)
             .withFailMessage("build.gradle.kts version must derive from the published workspace catalog (ws.versions.readme.plugin)")
             .contains("ws.versions.readme.plugin.get()")
 
@@ -77,8 +83,9 @@ class ReadmePluginPublicationTest {
      * published catalog).
      */
     private fun wsCatalogToml(): String {
-        val wsRepoToml = rootDir.parentFile
-            ?.resolve("workspace-bom/gradle/libs.versions.toml")
+        val wsRepoToml =
+            rootDir.parentFile
+                ?.resolve("workspace-bom/gradle/libs.versions.toml")
         if (wsRepoToml != null && wsRepoToml.exists()) return wsRepoToml.readText(UTF_8)
         error("ws catalog toml introuvable — résolution ws impossible pour l'hygiène")
     }

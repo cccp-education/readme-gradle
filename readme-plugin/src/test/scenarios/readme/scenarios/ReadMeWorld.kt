@@ -1,8 +1,13 @@
 package readme.scenarios
 
 import io.cucumber.java.After
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.cancel
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.UnexpectedBuildFailure
@@ -11,14 +16,13 @@ import org.slf4j.LoggerFactory.getLogger
 import java.io.File
 
 class ReadMeWorld {
-
     val log: Logger = getLogger(ReadMeWorld::class.java)
 
     val scope = CoroutineScope(Default + SupervisorJob())
 
-    var projectDir:  File?        = null
+    var projectDir: File? = null
     var buildResult: BuildResult? = null
-    var exception:   Throwable?   = null
+    var exception: Throwable? = null
 
     /**
      * Nullable git root — set by ProcessSteps when the project
@@ -77,34 +81,42 @@ class ReadMeWorld {
 
     private fun buildArguments(tasks: Array<out String>): List<String> =
         tasks.toList() +
-                "--stacktrace" +
-                (gitValidatorMockResult
+            "--stacktrace" +
+            (
+                gitValidatorMockResult
                     ?.let { listOf("-Preadme.git.validator.mock=$it") }
-                    ?: emptyList()) +
-                (unreadableFilesMock
+                    ?: emptyList()
+            ) +
+            (
+                unreadableFilesMock
                     ?.let { listOf("-Preadme.process.unreadable.files=$it") }
-                    ?: emptyList()) +
-                (readonlyFilesMock
+                    ?: emptyList()
+            ) +
+            (
+                readonlyFilesMock
                     ?.let { listOf("-Preadme.process.readonly.files=$it") }
-                    ?: emptyList()) +
-                (if (commitMock) listOf("-Preadme.commit.mock=true") else emptyList())
+                    ?: emptyList()
+            ) +
+            (if (commitMock) listOf("-Preadme.commit.mock=true") else emptyList())
 
     fun executeGradleAsync(vararg tasks: String): Deferred<BuildResult> {
         require(projectDir != null) { "Project directory must be initialized" }
         log.info("Starting async Gradle execution: ${tasks.joinToString(" ")}")
-        return scope.async {
-            try {
-                GradleRunner.create()
-                    .withProjectDir(projectDir!!)
-                    .withArguments(buildArguments(tasks))
-                    .withPluginClasspath()
-                    .build()
-            } catch (e: Exception) {
-                log.error("Gradle build failed", e)
-                exception = e
-                throw e
-            }
-        }.also { asyncJobs.add(it) }
+        return scope
+            .async {
+                try {
+                    GradleRunner
+                        .create()
+                        .withProjectDir(projectDir!!)
+                        .withArguments(buildArguments(tasks))
+                        .withPluginClasspath()
+                        .build()
+                } catch (e: Exception) {
+                    log.error("Gradle build failed", e)
+                    exception = e
+                    throw e
+                }
+            }.also { asyncJobs.add(it) }
     }
 
     /**
@@ -115,7 +127,8 @@ class ReadMeWorld {
     suspend fun executeGradle(vararg tasks: String): BuildResult {
         require(projectDir != null) { "Project directory must be initialized" }
         return try {
-            GradleRunner.create()
+            GradleRunner
+                .create()
                 .withProjectDir(projectDir!!)
                 .withArguments(buildArguments(tasks))
                 .withPluginClasspath()
@@ -133,8 +146,10 @@ class ReadMeWorld {
         }
     }
 
-    suspend fun <T> withTimeout(seconds: Long, block: suspend () -> T): T =
-        withTimeout(seconds * 1000) { block() }
+    suspend fun <T> withTimeout(
+        seconds: Long,
+        block: suspend () -> T,
+    ): T = withTimeout(seconds * 1000) { block() }
 
     suspend fun awaitAll() {
         if (asyncJobs.isNotEmpty()) {
@@ -151,16 +166,19 @@ class ReadMeWorld {
         return createTempDir("gradle-test-").also { dir ->
             dir.resolve("settings.gradle.kts").writeText(
                 "pluginManagement.repositories.gradlePluginPortal()\n" +
-                        "rootProject.name = \"${dir.name}\""
+                    "rootProject.name = \"${dir.name}\"",
             )
             dir.resolve("build.gradle.kts").writeText(
-                "plugins { id(\"$pluginId\") }"
+                "plugins { id(\"$pluginId\") }",
             )
             projectDir = dir
         }
     }
 
-    fun writeProjectFile(relativePath: String, content: String) {
+    fun writeProjectFile(
+        relativePath: String,
+        content: String,
+    ) {
         require(projectDir != null) { "Project directory must be initialized" }
         File(projectDir, relativePath).also {
             it.parentFile?.mkdirs()
@@ -195,14 +213,14 @@ class ReadMeWorld {
         // must be cleaned up explicitly to avoid polluting subsequent scenarios.
         gitRoot?.let { File(it, ".git").deleteRecursively() }
         projectDir?.deleteRecursively()
-        projectDir             = null
-        buildResult            = null
-        exception              = null
-        gitRoot                = null
+        projectDir = null
+        buildResult = null
+        exception = null
+        gitRoot = null
         gitValidatorMockResult = null
-        unreadableFilesMock    = null
-        readonlyFilesMock      = null
-        commitMock             = false
+        unreadableFilesMock = null
+        readonlyFilesMock = null
+        commitMock = false
         asyncJobs.clear()
     }
 }

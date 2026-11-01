@@ -13,11 +13,10 @@ import kotlin.test.assertTrue
  * Functional tests for the 'education.cccp.readme' plugin.
  */
 class ReadmeGradlePluginFunctionalTests {
-
     @field:TempDir
     lateinit var projectDir: File
 
-    private val buildFile    by lazy { projectDir.resolve("build.gradle.kts") }
+    private val buildFile by lazy { projectDir.resolve("build.gradle.kts") }
     private val settingsFile by lazy { projectDir.resolve("settings.gradle.kts") }
 
     private fun setupProject() {
@@ -26,7 +25,8 @@ class ReadmeGradlePluginFunctionalTests {
     }
 
     // YAML valide minimal pour les tests qui pré-créent readme.yml
-    private val validConfigYaml = """
+    private val validConfigYaml =
+        """
         source:
           dir: "."
           defaultLang: "en"
@@ -39,18 +39,20 @@ class ReadmeGradlePluginFunctionalTests {
           token: "<YOUR_GITHUB_PAT>"
           watchedBranches:
             - "main"
-    """.trimIndent()
+        """.trimIndent()
 
     @Test
     fun `transformReadme succeeds on empty project`() {
         setupProject()
 
-        val result = GradleRunner.create()
-            .forwardOutput()
-            .withPluginClasspath()
-            .withArguments("transformReadme", "--stacktrace")
-            .withProjectDir(projectDir)
-            .build()
+        val result =
+            GradleRunner
+                .create()
+                .forwardOutput()
+                .withPluginClasspath()
+                .withArguments("transformReadme", "--stacktrace")
+                .withProjectDir(projectDir)
+                .build()
 
         assertTrue(result.output.contains("BUILD SUCCESSFUL"))
     }
@@ -59,7 +61,8 @@ class ReadmeGradlePluginFunctionalTests {
     fun `generateReadme creates readme yml`() {
         setupProject()
 
-        GradleRunner.create()
+        GradleRunner
+            .create()
             .forwardOutput()
             .withPluginClasspath()
             .withArguments("generateReadme")
@@ -73,7 +76,8 @@ class ReadmeGradlePluginFunctionalTests {
     fun `generateReadme creates github actions workflow`() {
         setupProject()
 
-        GradleRunner.create()
+        GradleRunner
+            .create()
             .forwardOutput()
             .withPluginClasspath()
             .withArguments("generateReadme")
@@ -88,13 +92,16 @@ class ReadmeGradlePluginFunctionalTests {
         setupProject()
 
         // ← YAML valide obligatoire — Jackson parse le fichier au chargement du plugin
-        val configFile = File(projectDir, "readme.yml")
-            .also { it.writeText(validConfigYaml) }
-        val workflowDir  = File(projectDir, ".github/workflows").also { it.mkdirs() }
-        val workflowFile = File(workflowDir, "readme_action.yml")
-            .also { it.writeText("# existing workflow") }
+        val configFile =
+            File(projectDir, "readme.yml")
+                .also { it.writeText(validConfigYaml) }
+        val workflowDir = File(projectDir, ".github/workflows").also { it.mkdirs() }
+        val workflowFile =
+            File(workflowDir, "readme_action.yml")
+                .also { it.writeText("# existing workflow") }
 
-        GradleRunner.create()
+        GradleRunner
+            .create()
             .forwardOutput()
             .withPluginClasspath()
             .withArguments("generateReadme")
@@ -102,21 +109,24 @@ class ReadmeGradlePluginFunctionalTests {
             .build()
 
         // Les fichiers existants ne doivent pas être écrasés
-        assertEquals(validConfigYaml,        configFile.readText())
-        assertEquals("# existing workflow",  workflowFile.readText())
+        assertEquals(validConfigYaml, configFile.readText())
+        assertEquals("# existing workflow", workflowFile.readText())
     }
 
     @Test
     fun `transformReadme generates README from README_truth source file`() {
         setupProject()
 
-        File(projectDir, "README_truth.adoc").writeText("""
+        File(projectDir, "README_truth.adoc").writeText(
+            """
             = Test
 
             Hello world — no diagram blocks here.
-        """.trimIndent())
+            """.trimIndent(),
+        )
 
-        GradleRunner.create()
+        GradleRunner
+            .create()
             .forwardOutput()
             .withPluginClasspath()
             .withArguments("transformReadme")

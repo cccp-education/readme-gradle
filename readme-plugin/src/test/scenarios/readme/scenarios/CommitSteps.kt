@@ -9,8 +9,9 @@ import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.lib.ConfigConstants
 import java.io.File
 
-class CommitSteps(private val world: ReadMeWorld) {
-
+class CommitSteps(
+    private val world: ReadMeWorld,
+) {
     // ── Given ─────────────────────────────────────────────────────────────────
 
     /**
@@ -31,8 +32,9 @@ class CommitSteps(private val world: ReadMeWorld) {
      */
     @Given("a git repository is initialized")
     fun givenGitRepositoryIsInitialized() {
-        val dir = world.projectDir
-            ?: error("Project directory must be initialized before git init")
+        val dir =
+            world.projectDir
+                ?: error("Project directory must be initialized before git init")
 
         Git.init().setDirectory(dir).call().use { git ->
             // Configure minimal user identity — required for commits in bare environments
@@ -47,7 +49,7 @@ class CommitSteps(private val world: ReadMeWorld) {
                 """
                 .gradle/
                 build/
-                """.trimIndent()
+                """.trimIndent(),
             )
 
             // Stage ALL files currently present — covers build.gradle.kts,
@@ -56,11 +58,13 @@ class CommitSteps(private val world: ReadMeWorld) {
             git.add().addFilepattern(".").call()
 
             // Initial commit — establishes HEAD and leaves the working tree clean
-            git.commit().apply {
-                message = "chore: initial commit"
-                setAuthor("test-bot", "test-bot@example.com")
-                setCommitter("test-bot", "test-bot@example.com")
-            }.call()
+            git
+                .commit()
+                .apply {
+                    message = "chore: initial commit"
+                    setAuthor("test-bot", "test-bot@example.com")
+                    setCommitter("test-bot", "test-bot@example.com")
+                }.call()
         }
     }
 
@@ -71,8 +75,9 @@ class CommitSteps(private val world: ReadMeWorld) {
      */
     @Given("the git repository is deleted")
     fun givenGitRepositoryIsDeleted() {
-        val dir = world.projectDir
-            ?: error("Project directory must be initialized")
+        val dir =
+            world.projectDir
+                ?: error("Project directory must be initialized")
         File(dir, ".git").deleteRecursively()
     }
 
@@ -95,8 +100,9 @@ class CommitSteps(private val world: ReadMeWorld) {
      */
     @Then("the build log should mention a clean repository")
     fun thenBuildLogMentionsCleanRepository() {
-        val output = world.buildResult?.output
-            ?: error("No build result available — did the task run?")
+        val output =
+            world.buildResult?.output
+                ?: error("No build result available — did the task run?")
         assertThat(output)
             .describedAs("Expected build log to mention clean repository")
             .containsIgnoringCase("propre")
@@ -108,11 +114,19 @@ class CommitSteps(private val world: ReadMeWorld) {
      */
     @Then("a commit should have been created with message {string}")
     fun thenCommitCreatedWithMessage(expectedMessage: String) {
-        val dir = world.projectDir
-            ?: error("Project directory must be initialized")
+        val dir =
+            world.projectDir
+                ?: error("Project directory must be initialized")
 
         Git.open(dir).use { git ->
-            val commits = runCatching { git.log().all().call().toList() }.getOrElse { emptyList() }
+            val commits =
+                runCatching {
+                    git
+                        .log()
+                        .all()
+                        .call()
+                        .toList()
+                }.getOrElse { emptyList() }
             val matching = commits.filter { it.fullMessage.contains(expectedMessage) }
             assertThat(matching)
                 .describedAs("Expected a commit with message containing: $expectedMessage")
@@ -127,11 +141,19 @@ class CommitSteps(private val world: ReadMeWorld) {
      */
     @Then("no commit should have been created")
     fun thenNoCommitCreated() {
-        val dir = world.projectDir
-            ?: error("Project directory must be initialized")
+        val dir =
+            world.projectDir
+                ?: error("Project directory must be initialized")
 
         Git.open(dir).use { git ->
-            val commits = runCatching { git.log().all().call().toList() }.getOrElse { emptyList() }
+            val commits =
+                runCatching {
+                    git
+                        .log()
+                        .all()
+                        .call()
+                        .toList()
+                }.getOrElse { emptyList() }
             val nonSetupCommits = commits.filter { it.fullMessage.trim() != "chore: initial commit" }
             assertThat(nonSetupCommits)
                 .describedAs("Expected no README commits — only the initial setup commit should exist")

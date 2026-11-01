@@ -6,11 +6,16 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.tasks.*
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
+import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.UntrackedTask
 
 @UntrackedTask(because = "Opération Git — toujours exécutée en CI")
 abstract class CommitGeneratedReadmeTask : DefaultTask() {
-
     @get:InputDirectory
     @get:PathSensitive(PathSensitivity.RELATIVE)
     abstract val repoDir: DirectoryProperty
@@ -52,7 +57,8 @@ abstract class CommitGeneratedReadmeTask : DefaultTask() {
         Git.open(root).use { git ->
             if (stageAndCommit(git)) {
                 // ← setCredentialsProvider() méthode publique, pas accès direct au field
-                git.push()
+                git
+                    .push()
                     .setCredentialsProvider(credentials)
                     .call()
                 logger.lifecycle("Push effectué avec succès.")
@@ -77,16 +83,20 @@ abstract class CommitGeneratedReadmeTask : DefaultTask() {
 
         logChangedFiles(status)
 
-        git.add().apply {
-            addFilepattern("README*.adoc")
-            addFilepattern(".github/workflows/readmes/images/")
-        }.call()
+        git
+            .add()
+            .apply {
+                addFilepattern("README*.adoc")
+                addFilepattern(".github/workflows/readmes/images/")
+            }.call()
 
-        git.commit().apply {
-            message = commitMessage.get()
-            setAuthor(gitUserName.get(), gitUserEmail.get())
-            setCommitter(gitUserName.get(), gitUserEmail.get())
-        }.call()
+        git
+            .commit()
+            .apply {
+                message = commitMessage.get()
+                setAuthor(gitUserName.get(), gitUserEmail.get())
+                setCommitter(gitUserName.get(), gitUserEmail.get())
+            }.call()
 
         logger.lifecycle("Commit : \"${commitMessage.get()}\"")
         return true
@@ -101,22 +111,25 @@ abstract class CommitGeneratedReadmeTask : DefaultTask() {
      * created by generateReadme) do not trigger a spurious commit.
      */
     private fun hasReadmeChanges(status: Status): Boolean {
-        val allChanged = status.added + status.changed + status.modified +
+        val allChanged =
+            status.added + status.changed + status.modified +
                 status.removed + status.missing + status.untracked
 
         return allChanged.any { path ->
             path.matches(Regex("README.*\\.adoc")) ||
-            path.startsWith(".github/workflows/readmes/images/")
+                path.startsWith(".github/workflows/readmes/images/")
         }
     }
 
     private fun logChangedFiles(status: Status) {
-        val allChanged = status.added + status.changed + status.modified +
+        val allChanged =
+            status.added + status.changed + status.modified +
                 status.removed + status.missing + status.untracked
-        val readme = allChanged.filter { path ->
-            path.matches(Regex("README.*\\.adoc")) ||
-            path.startsWith(".github/workflows/readmes/images/")
-        }
+        val readme =
+            allChanged.filter { path ->
+                path.matches(Regex("README.*\\.adoc")) ||
+                    path.startsWith(".github/workflows/readmes/images/")
+            }
         logger.lifecycle("Fichiers à commiter (${readme.size}) :")
         readme.forEach { logger.lifecycle("  + $it") }
     }
@@ -126,7 +139,8 @@ abstract class CommitGeneratedReadmeTask : DefaultTask() {
      * Always returns false in production — property is absent.
      */
     private fun isCommitMock(): Boolean =
-        project.findProperty("readme.commit.mock")
+        project
+            .findProperty("readme.commit.mock")
             ?.toString()
             ?.trim()
             ?.equals("true", ignoreCase = true)

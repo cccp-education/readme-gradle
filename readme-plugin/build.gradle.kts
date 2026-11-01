@@ -15,13 +15,16 @@ buildscript {
 plugins {
     id("education.cccp.build.gradle-plugin") version "0.0.7"
     id("education.cccp.build.publishing") version "0.0.7"
+    id("education.cccp.build.lint") version "0.0.7"
     alias(libs.plugins.publish)
     alias(libs.plugins.codebase)
 }
 
 group = "education.cccp"
 // MEM-CAT-ROLLOUT-6 (D3) — self version derived from the published workspace catalog.
-version = ws.versions.readme.plugin.get()
+version =
+    ws.versions.readme.plugin
+        .get()
 
 publishingConventions {
     publicationType = "PLUGIN"
@@ -66,7 +69,11 @@ tasks.withType<Test> {
     // Gradle instead of read from the sibling worktree (racy across sessions and
     // absent in CI, which clones only this repository). Patron graphify D5-RACE
     // (S-029). The test falls back to the sibling toml only for local runs.
-    systemProperty("readme.publishedCatalog.version", ws.versions.readme.plugin.get())
+    systemProperty(
+        "readme.publishedCatalog.version",
+        ws.versions.readme.plugin
+            .get(),
+    )
     testLogging {
         events("passed", "skipped", "failed")
         showStandardStreams = true
@@ -125,18 +132,19 @@ tasks.named<ProcessResources>(functionalTest.processResourcesTaskName) {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-val functionalTestTask = tasks.register<Test>("functionalTest") {
-    description = "Runs functional tests."
-    group = "verification"
-    testClassesDirs = functionalTest.output.classesDirs
-    classpath = configurations[functionalTest.runtimeClasspathConfigurationName] + functionalTest.output
-    useJUnitPlatform()
-    testLogging {
-        events("passed", "skipped", "failed")
-        showStandardStreams = true
-        exceptionFormat = FULL
+val functionalTestTask =
+    tasks.register<Test>("functionalTest") {
+        description = "Runs functional tests."
+        group = "verification"
+        testClassesDirs = functionalTest.output.classesDirs
+        classpath = configurations[functionalTest.runtimeClasspathConfigurationName] + functionalTest.output
+        useJUnitPlatform()
+        testLogging {
+            events("passed", "skipped", "failed")
+            showStandardStreams = true
+            exceptionFormat = FULL
+        }
     }
-}
 
 // ── Cucumber source set config ────────────────────────────────────────────────
 sourceSets {
@@ -157,27 +165,31 @@ dependencies {
 }
 
 // ── Cucumber test task ────────────────────────────────────────────────────────
-val cucumberTest = tasks.register<Test>("cucumberTest") {
-    description = "Runs Cucumber BDD tests."
-    group = "verification"
-    testClassesDirs = sourceSets.test.get().output.classesDirs
-    classpath = configurations.testRuntimeClasspath.get() +
+val cucumberTest =
+    tasks.register<Test>("cucumberTest") {
+        description = "Runs Cucumber BDD tests."
+        group = "verification"
+        testClassesDirs =
+            sourceSets.test
+                .get()
+                .output.classesDirs
+        classpath = configurations.testRuntimeClasspath.get() +
             sourceSets.test.get().output +
             functionalTest.output +
             sourceSets.main.get().output
-    useJUnitPlatform {
-        excludeEngines("junit-jupiter")
+        useJUnitPlatform {
+            excludeEngines("junit-jupiter")
+        }
+        systemProperty("cucumber.junit-platform.naming-strategy", "long")
+        testLogging {
+            events("passed", "skipped", "failed")
+            showStandardStreams = true
+            exceptionFormat = FULL
+        }
+        outputs.upToDateWhen { false }
+        dependsOn(functionalTest.classesTaskName)
+        dependsOn(tasks.classes)
     }
-    systemProperty("cucumber.junit-platform.naming-strategy", "long")
-    testLogging {
-        events("passed", "skipped", "failed")
-        showStandardStreams = true
-        exceptionFormat = FULL
-    }
-    outputs.upToDateWhen { false }
-    dependsOn(functionalTest.classesTaskName)
-    dependsOn(tasks.classes)
-}
 
 tasks.check {
     dependsOn(functionalTestTask)
@@ -195,11 +207,12 @@ gradlePlugin {
             id = "education.cccp.readme"
             implementationClass = "readme.ReadmePlugin"
             displayName = "README helper Plugin"
-            description = """
+            description =
+                """
                 Generates GitHub-compatible README.adoc files from README_truth.adoc
                 source files. Replaces diagram blocks with PNG images committed back
                 to the repository via GitHub Actions and JGit.
-            """.trimIndent()
+                """.trimIndent()
             tags.set(
                 listOf(
                     "asciidoc",
@@ -207,8 +220,8 @@ gradlePlugin {
                     "readme",
                     "documentation",
                     "github",
-                    "diagram"
-                )
+                    "diagram",
+                ),
             )
         }
     }

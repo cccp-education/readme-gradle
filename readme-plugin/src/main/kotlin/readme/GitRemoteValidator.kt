@@ -10,9 +10,13 @@ fun interface GitRemoteValidator {
 }
 
 sealed class GitValidationResult {
-    object Valid                  : GitValidationResult()
-    object TokenPlaceholder       : GitValidationResult()
-    object Unreachable            : GitValidationResult()
-    object RepositoryNotFound     : GitValidationResult()
+    object Valid : GitValidationResult()
+
+    object TokenPlaceholder : GitValidationResult()
+
+    object Unreachable : GitValidationResult()
+
+    object RepositoryNotFound : GitValidationResult()
+
     object InsufficientPushRights : GitValidationResult()
 }

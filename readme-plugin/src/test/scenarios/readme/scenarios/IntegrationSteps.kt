@@ -14,8 +14,9 @@ import readme.GitUtils
 import readme.ReadmePlantUmlConfig
 import java.io.File
 
-class IntegrationSteps(private val world: ReadMeWorld) {
-
+class IntegrationSteps(
+    private val world: ReadMeWorld,
+) {
     // Temporary git repo used as the integration project directory
     private var integrationDir: File? = null
 
@@ -49,7 +50,7 @@ class IntegrationSteps(private val world: ReadMeWorld) {
         val configFile = File("readme.yml")
         require(configFile.exists()) {
             "readme.yml not found in working directory — " +
-            "inject it via: echo \"\${{ secrets.README_GRADLE_PLUGIN }}\" > readme.yml"
+                "inject it via: echo \"\${{ secrets.README_GRADLE_PLUGIN }}\" > readme.yml"
         }
         val config = ReadmePlantUmlConfig.load(File("."))
 
@@ -58,13 +59,16 @@ class IntegrationSteps(private val world: ReadMeWorld) {
         credentials = UsernamePasswordCredentialsProvider("x-access-token", token)
 
         // Resolve origin URL from current repo's .git — no hardcoded URL
-        val gitRoot = GitUtils.findGitRoot(File(".").canonicalFile)
-            ?: error("No .git directory found — integration test must run inside the git repo")
-        originUrl = Git.open(gitRoot).use { git ->
-            git.repository.config.getString("remote", "origin", "url")
-                ?.takeIf { it.isNotBlank() }
-                ?: error("No 'origin' remote configured in .git/config")
-        }
+        val gitRoot =
+            GitUtils.findGitRoot(File(".").canonicalFile)
+                ?: error("No .git directory found — integration test must run inside the git repo")
+        originUrl =
+            Git.open(gitRoot).use { git ->
+                git.repository.config
+                    .getString("remote", "origin", "url")
+                    ?.takeIf { it.isNotBlank() }
+                    ?: error("No 'origin' remote configured in .git/config")
+            }
 
         // Create temporary project directory
         val tmpDir = createTempDir("readme-integration-").also { integrationDir = it }
@@ -72,10 +76,10 @@ class IntegrationSteps(private val world: ReadMeWorld) {
         // Write minimal Gradle project files
         File(tmpDir, "settings.gradle.kts").writeText(
             "pluginManagement.repositories.gradlePluginPortal()\n" +
-            "rootProject.name = \"${tmpDir.name}\""
+                "rootProject.name = \"${tmpDir.name}\"",
         )
         File(tmpDir, "build.gradle.kts").writeText(
-            "plugins { id(\"$pluginId\") }"
+            "plugins { id(\"$pluginId\") }",
         )
 
         // Copy readme.yml into the temporary project
@@ -84,13 +88,22 @@ class IntegrationSteps(private val world: ReadMeWorld) {
         // Initialize JGit repo + configure remote origin
         Git.init().setDirectory(tmpDir).call().use { git ->
             git.repository.config.apply {
-                setString(ConfigConstants.CONFIG_USER_SECTION, null,
-                    ConfigConstants.CONFIG_KEY_NAME, config.git.userName)
-                setString(ConfigConstants.CONFIG_USER_SECTION, null,
-                    ConfigConstants.CONFIG_KEY_EMAIL, config.git.userEmail)
+                setString(
+                    ConfigConstants.CONFIG_USER_SECTION,
+                    null,
+                    ConfigConstants.CONFIG_KEY_NAME,
+                    config.git.userName,
+                )
+                setString(
+                    ConfigConstants.CONFIG_USER_SECTION,
+                    null,
+                    ConfigConstants.CONFIG_KEY_EMAIL,
+                    config.git.userEmail,
+                )
                 save()
             }
-            git.remoteAdd()
+            git
+                .remoteAdd()
                 .setName("origin")
                 .setUri(URIish(originUrl))
                 .call()
@@ -100,11 +113,13 @@ class IntegrationSteps(private val world: ReadMeWorld) {
 
             // Initial commit — establishes HEAD
             git.add().addFilepattern(".").call()
-            git.commit().apply {
-                message = "chore: integration test initial commit"
-                setAuthor(config.git.userName, config.git.userEmail)
-                setCommitter(config.git.userName, config.git.userEmail)
-            }.call()
+            git
+                .commit()
+                .apply {
+                    message = "chore: integration test initial commit"
+                    setAuthor(config.git.userName, config.git.userEmail)
+                    setCommitter(config.git.userName, config.git.userEmail)
+                }.call()
         }
 
         world.projectDir = tmpDir
@@ -121,13 +136,16 @@ class IntegrationSteps(private val world: ReadMeWorld) {
 
         Git.open(dir).use { git ->
             // Create and checkout the branch
-            git.checkout().apply {
-                setCreateBranch(true)
-                setName(branch)
-            }.call()
+            git
+                .checkout()
+                .apply {
+                    setCreateBranch(true)
+                    setName(branch)
+                }.call()
 
             // Push the branch to origin so it exists on GitHub
-            git.push()
+            git
+                .push()
                 .setCredentialsProvider(credentials)
                 .setRemote("origin")
                 .add(branch)
@@ -139,8 +157,9 @@ class IntegrationSteps(private val world: ReadMeWorld) {
 
     @Then("the build log should contain {string}")
     fun thenBuildLogContainsString(expected: String) {
-        val output = world.buildResult?.output
-            ?: error("No build result available — did the task run?")
+        val output =
+            world.buildResult?.output
+                ?: error("No build result available — did the task run?")
         assertThat(output)
             .describedAs("Expected build log to contain: $expected")
             .contains(expected)
@@ -161,23 +180,24 @@ class IntegrationSteps(private val world: ReadMeWorld) {
         runCatching {
             Git.open(dir).use { git ->
                 // Delete remote branch: git push origin --delete <branch>
-                git.push()
+                git
+                    .push()
                     .setCredentialsProvider(creds)
                     .setRemote("origin")
                     .setRefSpecs(
-                        org.eclipse.jgit.transport.RefSpec(":refs/heads/$branch")
-                    )
-                    .call()
+                        org.eclipse.jgit.transport
+                            .RefSpec(":refs/heads/$branch"),
+                    ).call()
             }
         }.onFailure { e ->
             println("[integration] WARNING: failed to delete remote branch $branch — ${e.message}")
         }
 
         integrationDir?.deleteRecursively()
-        integrationDir  = null
+        integrationDir = null
         integrationBranch = null
-        credentials     = null
-        originUrl       = null
+        credentials = null
+        originUrl = null
     }
 }
 

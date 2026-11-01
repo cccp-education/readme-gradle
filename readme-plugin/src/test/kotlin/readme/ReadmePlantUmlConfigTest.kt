@@ -7,9 +7,10 @@ import org.junit.jupiter.api.io.TempDir
 import java.io.File
 
 class ReadmePlantUmlConfigTest {
-
     @Test
-    fun `load retourne les valeurs par defaut si fichier absent`(@TempDir tempDir: File) {
+    fun `load retourne les valeurs par defaut si fichier absent`(
+        @TempDir tempDir: File,
+    ) {
         val config = ReadmePlantUmlConfig.load(tempDir)
 
         assertEquals(".", config.source.dir)
@@ -20,7 +21,9 @@ class ReadmePlantUmlConfigTest {
     }
 
     @Test
-    fun `load mappe correctement un fichier YAML complet`(@TempDir tempDir: File) {
+    fun `load mappe correctement un fichier YAML complet`(
+        @TempDir tempDir: File,
+    ) {
         File(tempDir, "readme.yml").writeText(
             """
             source:
@@ -36,21 +39,23 @@ class ReadmePlantUmlConfigTest {
               watchedBranches:
                 - "develop"
                 - "release"
-        """.trimIndent()
+            """.trimIndent(),
         )
 
         val config = ReadmePlantUmlConfig.load(tempDir)
 
-        assertEquals("docs",            config.source.dir)
-        assertEquals("fr",              config.source.defaultLang)
-        assertEquals("bot",             config.git.userName)
+        assertEquals("docs", config.source.dir)
+        assertEquals("fr", config.source.defaultLang)
+        assertEquals("bot", config.git.userName)
         assertEquals("bot@example.com", config.git.userEmail)
-        assertEquals("ghp_test_token",  config.git.token)
+        assertEquals("ghp_test_token", config.git.token)
         assertEquals(listOf("develop", "release"), config.git.watchedBranches)
     }
 
     @Test
-    fun `load retourne les valeurs par defaut si fichier vide`(@TempDir tempDir: File) {
+    fun `load retourne les valeurs par defaut si fichier vide`(
+        @TempDir tempDir: File,
+    ) {
         File(tempDir, "readme.yml").writeText("")
         val config = ReadmePlantUmlConfig.load(tempDir)
 
@@ -59,7 +64,9 @@ class ReadmePlantUmlConfigTest {
     }
 
     @Test
-    fun `load retourne les valeurs par defaut si YAML invalide`(@TempDir tempDir: File) {
+    fun `load retourne les valeurs par defaut si YAML invalide`(
+        @TempDir tempDir: File,
+    ) {
         File(tempDir, "readme.yml").writeText("# existing config")
         val config = ReadmePlantUmlConfig.load(tempDir)
 
@@ -68,7 +75,9 @@ class ReadmePlantUmlConfigTest {
     }
 
     @Test
-    fun `resolvedToken leve une erreur si token est vide`(@TempDir tempDir: File) {
+    fun `resolvedToken leve une erreur si token est vide`(
+        @TempDir tempDir: File,
+    ) {
         val config = ReadmePlantUmlConfig.load(tempDir)
         assertThrows(IllegalStateException::class.java) {
             config.git.resolvedToken()
@@ -76,12 +85,14 @@ class ReadmePlantUmlConfigTest {
     }
 
     @Test
-    fun `resolvedToken leve une erreur si token est le placeholder`(@TempDir tempDir: File) {
+    fun `resolvedToken leve une erreur si token est le placeholder`(
+        @TempDir tempDir: File,
+    ) {
         File(tempDir, "readme.yml").writeText(
             """
             git:
               token: "<YOUR_GITHUB_PAT>"
-        """.trimIndent()
+            """.trimIndent(),
         )
         val config = ReadmePlantUmlConfig.load(tempDir)
         assertThrows(IllegalStateException::class.java) {
