@@ -13,9 +13,9 @@ buildscript {
 }
 
 plugins {
-    id("education.cccp.build.gradle-plugin") version "0.0.11"
-    id("education.cccp.build.publishing") version "0.0.11"
-    id("education.cccp.build.lint") version "0.0.11"
+    id("education.cccp.build.gradle-plugin") version "0.0.12"
+    id("education.cccp.build.publishing") version "0.0.12"
+    id("education.cccp.build.lint") version "0.0.12"
     alias(libs.plugins.publish)
     alias(libs.plugins.codebase)
 }
