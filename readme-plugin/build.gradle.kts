@@ -1,4 +1,5 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+import org.gradle.plugin.compatibility.compatibility
 
 buildscript {
     repositories {
@@ -223,6 +224,12 @@ gradlePlugin {
                     "diagram",
                 ),
             )
+            compatibility {
+                features {
+                    configurationCache.set(false)
+                    isolatedProjects.set(false)
+                }
+            }
         }
     }
 }
