@@ -132,3 +132,7 @@ Publié : Maven Central (education.cccp:readme-plugin v0.0.1)
 | Liberty 🗽 | api-key-pool-gradle | N0 | 002
 | ALGER 🟡 | dashboard-gradle | N3 | 000
 |===
+
+== Session 013 — JitPack mirror (CNV-16)
+
+Publication JitPack de readme-plugin 0.0.2. JitPack : 0.0.2 — POM HTTP 200.
