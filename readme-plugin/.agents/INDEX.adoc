@@ -25,7 +25,7 @@ _Prochaine session_ : 013 — RM-12-2 refonte README consommateur vs plugin selo
 '''
 == RÈGLES ABSOLUES (résumé)
 
-=== 1. COMMITS/GIT — INTERDICTION FORMELLE
+=== 1. COMMITS/GIT — AUTORISÉS (décision pilote 2026-11-11 : tous repos publics)
 === 2. FICHIERS DE CONFIG — BACKUP AVANT MODIF
 === 3. TESTS EN FIN DE SESSION — INTERDIT
 === 4. 6 ÉTAPES FIN DE SESSION
