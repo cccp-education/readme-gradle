@@ -57,10 +57,10 @@ class ReadmePluginPublicationTest {
     fun `settings pins the workspace catalog`() {
         val settings = pluginDir.resolve("settings.gradle.kts").readText(UTF_8)
 
-        // MEM-CAT-ROLLOUT-6 (D4) — single pin per borough, published workspace catalog.
+        // CNV-17 — single JitPack channel: the catalog is served by JitPack.
         assertThat(settings)
-            .withFailMessage("settings.gradle.kts must pin the published workspace catalog (education.cccp:workspace-catalog:0.0.116)")
-            .contains("""from("education.cccp:workspace-catalog:0.0.116")""")
+            .withFailMessage("settings.gradle.kts must pin the JitPack workspace catalog")
+            .contains("""from("com.github.cccp-education.workspace-bom:workspace-catalog:""")
     }
 
     @Test
