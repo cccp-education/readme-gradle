@@ -139,3 +139,9 @@ Publié : Maven Central (education.cccp:readme-plugin v0.0.1)
 == Session 013 — JitPack mirror (CNV-16)
 
 Publication JitPack de readme-plugin 0.0.2. JitPack : 0.0.2 — POM HTTP 200.
+
+== Session 015 — EAGER : publication JitPack canal unique (2026-11-14)
+
+Alignement EAGER (AGENT/PROMPT_REPRISE) : JitPack canal unique ;
+Central/Portal retirés. Zéro code. Rapport
+`.agents/sessions/015-eager-publication-jitpack-only.adoc`.
