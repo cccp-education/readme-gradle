@@ -8,3 +8,4 @@
 * Scénario de permission root-safe (`assumeTrue` quand l'utilisateur est root).
 * Run `43503179967` VERT (commit `41d09e6`).
 * Rapport `readme-plugin/.agents/sessions/014-gbl-013-wave2.adoc`.
+* Session 015 — EAGER : publication JitPack canal unique (AGENT/PROMPT_REPRISE alignés ; Central/Portal retirés) — 2026-11-14.
