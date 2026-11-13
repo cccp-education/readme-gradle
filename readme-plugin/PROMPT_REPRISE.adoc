@@ -1,6 +1,16 @@
-= PROMPT_REPRISE — Chiraq (readme-plugin) — Session 013
-:date: 2026-09-07
-:session: 013
+= PROMPT_REPRISE — Chiraq (readme-plugin) — Session 014
+:date: 2026-11-14
+:session: 014
+
+== Session 014 terminée — GBL-013 vague 2 : CI sur l'image de runtime
+
+* `ci/run.sh` (`fast`/`test` = `-p readme-plugin clean check`).
+* `ci.yml` épinglé sur `cccpeducation/cccp-ci-base@sha256:4722c1bc…` ;
+  `setup-java`, caches manuels et `chmod` supprimés.
+* Scénario de permission root-safe (`assumeTrue` quand l'utilisateur est root).
+* Run `43503179967` **VERT** (commit `41d09e6`). Rapport
+  `readme-plugin/.agents/sessions/014-gbl-013-wave2.adoc`.
+* Suite : RM-12 (readme-LLM/i18n) sur demande pilote.
 
 == Session 012 terminée — US-ROLLOUT-6 adoption version catalog (cross-borough MEMPHIS)
 

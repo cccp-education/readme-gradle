@@ -41,3 +41,12 @@ Doc CADRAGE_EPIC_RM_I18N.adoc créé.
 Publication JitPack de readme-plugin 0.0.2. JitPack : 0.0.2 — POM HTTP 200. Shim `useModule` pour
 `education.cccp.build.*` (tag JitPack `0.0.15`). Rapport
 `readme-plugin/.agents/sessions/013-jitpack-mirror.adoc`.
+
+== Session 014 — GBL-013 vague 2 : gate CI sur l'image de runtime — 2026-11-14
+
+`ci/run.sh` (`fast`/`test` = `-p readme-plugin clean check`) et `ci.yml` épinglé
+sur `cccpeducation/cccp-ci-base@sha256:4722c1bc…` ; `setup-java`, caches manuels
+et `chmod` supprimés. Scénario de permission rendu **root-safe** (`assumeTrue`).
+Run `43503179967` **VERT** (commit `41d09e6`). Rapport
+`readme-plugin/.agents/sessions/014-gbl-013-wave2.adoc`.
+

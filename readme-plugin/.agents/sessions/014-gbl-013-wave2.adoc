@@ -1,0 +1,24 @@
+= Session 014 — GBL-013 vague 2 : gate CI sur l'image de runtime
+:date: 2026-11-14
+:borough: Chiraq (readme-gradle)
+
+== Livré
+
+* `ci/run.sh` — `fast`/`test` = `./gradlew -p readme-plugin clean check`.
+* `.github/workflows/ci.yml` migré : `container:` épinglé sur
+  `cccpeducation/cccp-ci-base@sha256:4722c1bc…`, `setup-java`, caches manuels et
+  `chmod` supprimés, `setup-gradle` + `ci/run.sh test`.
+* Scénario « output.imgDir not writable » rendu **root-safe** : `assumeTrue`
+  quand l'utilisateur est root (l'image tourne en root, `chmod` n'empêche pas
+  l'écriture).
+* Run `43503179967` **VERT** (commit `41d09e6`), après un premier run rouge
+  `43501430387` (échec root du scénario de permission).
+
+== Notes
+
+Les workflows `readme_action.yml` et `integration_test.yml` restent sur l'hôte
+(secrets, commit JGit, dispatch).
+
+== Suivant
+
+US-5 se poursuit sur les dépôts restants de la vague 2.

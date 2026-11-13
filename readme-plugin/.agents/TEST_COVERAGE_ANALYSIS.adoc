@@ -20,3 +20,13 @@ Inchangé — aucun test modifié (cleanup build scripts uniquement).
 Gate non-régression exécutée : `./gradlew check` VERT — 80 tests
 (unit + cucumber + functional), 1 skipped, 0 failures. Baseline S-010
 préservée après bump codebase 0.0.2→0.0.8.
+
+== Session 014 — GBL-013 (2026-11-14)
+
+Test-only : le scénario « output.imgDir exists but is not writable » est
+**root-safe** — `assumeTrue(System.getProperty("user.name") != "root")` dans
+`ScaffoldSteps.givenDirectoryExistsAndIsNotWritable`. L'image de runtime tourne
+en root, où `chmod` n'empêche pas l'écriture ; le scénario est skippé au lieu de
+produire un faux rouge. Aucun autre test modifié. Preuve = CI `43503179967`
+verte (56 tests, 1 skipped, 0 failed).
+

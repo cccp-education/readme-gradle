@@ -2,6 +2,8 @@
 :toc:
 
 _Règles absolues_ : voir `AGENT.adoc`
+_Derniere mise a jour_ : 2026-11-14 (Session 014 — **GBL-013 vague 2** ✅ — `ci/run.sh` (`fast`/`test`) + `ci.yml` épinglé sur `cccpeducation/cccp-ci-base@sha256:4722c1bc…` ; scénario de permission root-safe ; run `43503179967` VERT. Rapport `.agents/sessions/014-gbl-013-wave2.adoc`.)
+_Derniere mise a jour_ : 2026-11-09 (Session 013 — JitPack mirror, plugin 0.0.2 ; run CI verte)
 _Derniere mise a jour_ : 2026-10-11 (Session 012 — re-pin catalog ws `0.0.76 → 0.0.78`, rollout MEMPHIS 0.0.78 ; compile VERT)
 _Projet_ : readme-gradle — plugin Gradle README.adoc + PlantUML (N2)
 _Borough_ : Chiraq 🟤 — 13ème borough
@@ -17,6 +19,7 @@ _Session terminee_ : 008 — Architecture README Plugin + Consommateur (déplace
 _Session terminee_ : 009 — CNV-6 Migration conventions plugins education.cccp.build.* v0.0.1 ✅
 _Session terminee_ : 010 — Cadrage EPIC RM-12 (readme-LLM) + RM-4b (auto-traduction i18n pattern bakery) ✅
 _Session terminee_ : 011 — RM-12-1 cleanup dépendances (node-gradle + bundle readme.ai) + déblocage codebase 0.0.8 ✅
+_Session terminee_ : 014 — GBL-013 vague 2 (CI sur l'image de runtime, run `43503179967`) ✅
 _Session terminee_ : 012 — US-ROLLOUT-6 adoption version catalog ws 0.0.31 (pin settings + version dérivée ws + id inline, garde 3/3, check 83 tests 0 FAIL, mavenLocal VERT) ✅
 
 _Dernière mise à jour_ : 2026-09-07 (Session 012 US-ROLLOUT-6 adoption version catalog, cross-borough MEMPHIS EPIC MEM-CAT-ROLLOUT ordre 6)
