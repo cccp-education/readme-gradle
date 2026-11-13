@@ -45,6 +45,12 @@ class ScaffoldSteps(
 
     @Given("the directory {string} exists and is not writable")
     fun givenDirectoryExistsAndIsNotWritable(relativePath: String) {
+        // GBL-013 US-5 — the runtime image runs as root, where chmod does not
+        // prevent writes. The scenario is skipped rather than asserting a
+        // permission failure that root cannot produce.
+        org.junit.jupiter.api.Assumptions.assumeTrue(System.getProperty("user.name") != "root") {
+            "running as root: chmod cannot make a directory non-writable — scenario skipped"
+        }
         require(world.projectDir != null) { "Project directory must be initialized" }
         val dir = java.io.File(world.projectDir, relativePath).also { it.mkdirs() }
         dir.setWritable(false)
