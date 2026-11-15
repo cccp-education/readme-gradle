@@ -56,3 +56,15 @@ Run `43503179967` **VERT** (commit `41d09e6`). Rapport
 Alignement EAGER : JitPack canal unique ; Maven Central/Sonatype et
 Gradle Plugin Portal **retirés**. Aucun code, aucun test, aucune
 publication. Rapport `.agents/sessions/015-eager-publication-jitpack-only.adoc`.
+
+== Session 016 — GBL-014-5 / GBL-014-4 / GBL-013-10 — 2026-11-15
+
+Canal de publication conditionnel (`-Pchannel`, défaut `jitpack`) sur
+`settings.gradle.kts` (racine + `readme-plugin`) : dépôt JitPack + shim
+`useModule(...)` seulement en `jitpack` ; `ci/run.sh` passe `-Pchannel`
+(`1109181`). Shim `conventions-plugin 0.0.19` (`3db43c6`). Actions
+`node24`-natives sur les trois workflows (`checkout@v7`, `setup-gradle@v6`,
+`setup-java@v6`, `cache@v6`, `upload-artifact@v7`) (`0b8ebf3`) ; image
+`cccp-ci-base@sha256:03ead378…` Node 26.13.1 (`cbbe6fb`). CI `CI` verte sur les
+4 commits. Zéro code de production modifié, zéro test local. Rapport
+`.agents/sessions/016-gbl-014-5-channel-rollout.adoc`.

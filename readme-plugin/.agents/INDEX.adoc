@@ -2,6 +2,7 @@
 :toc:
 
 _Règles absolues_ : voir `AGENT.adoc`
+_Derniere mise a jour_ : 2026-11-15 (Session 016 — **GBL-014-5** canal conditionnel (`-Pchannel`, défaut `jitpack`) racine + `readme-plugin`, **GBL-014-4** shim `conventions-plugin 0.0.19`, **GBL-013-10** actions `node24`-natives sur les 3 workflows + image `cccp-ci-base@sha256:03ead378…` (Node 26.13.1) ; CI `CI` verte — `43660609854`, `43672577432`, `43683425995`, `43690097479`. Rapport `.agents/sessions/016-gbl-014-5-channel-rollout.adoc`.)
 _Derniere mise a jour_ : 2026-11-14 (Session 014 — **GBL-013 vague 2** ✅ — `ci/run.sh` (`fast`/`test`) + `ci.yml` épinglé sur `cccpeducation/cccp-ci-base@sha256:4722c1bc…` ; scénario de permission root-safe ; run `43503179967` VERT. Rapport `.agents/sessions/014-gbl-013-wave2.adoc`.)
 _Derniere mise a jour_ : 2026-11-09 (Session 013 — JitPack mirror, plugin 0.0.2 ; run CI verte)
 _Derniere mise a jour_ : 2026-10-11 (Session 012 — re-pin catalog ws `0.0.76 → 0.0.78`, rollout MEMPHIS 0.0.78 ; compile VERT)

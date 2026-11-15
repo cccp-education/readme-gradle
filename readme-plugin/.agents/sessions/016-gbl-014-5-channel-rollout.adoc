@@ -1,0 +1,73 @@
+= Session 016 — GBL-014-5 / GBL-014-4 / GBL-013-10 (readme)
+:toc:
+
+:_date_: 2026-11-15
+:_borough_: Chiraq (readme-gradle, N2)
+:_session_precedente_: 015 (EAGER : publication JitPack canal unique)
+:_statut_: ✅ rollout livré, CI verte
+
+== Contexte
+
+Session globale 229 (2026-11-15). Deux chantiers transverses touchent le
+borough :
+
+. **GBL-014-5** — le canal de publication devient une **propriété du build**
+   (`-Pchannel`, défaut `jitpack`), jamais une branche. Un tag `vX.Y.Z` sert le
+   même commit sur les deux canaux.
+. **GBL-014-4** — shim `conventions-plugin` `0.0.18 → 0.0.19`.
+. **GBL-013-10** — dernière LTS Node : actions `node24`-natives et image CI
+   `cccp-ci-base` rebâtie sur Node 26.13.1.
+
+Cadrages : `.agents/CADRAGE_EPIC_GBL_014_DUAL_CHANNEL.adoc` et
+`.agents/CADRAGE_EPIC_GBL_013_PORTABILITE_CI.adoc` (racine workspace).
+
+== Changements
+
+* `1109181` — **GBL-014-5** : `settings.gradle.kts` (racine **et**
+  `readme-plugin`) conditionnels sur
+  `providers.gradleProperty("channel").getOrElse("jitpack")` ; dépôt JitPack +
+  shim `useModule(...)` **seulement** en `jitpack` ; `ci/run.sh` passe
+  `-Pchannel="$channel"` sur le job `fast|test`
+  (`-p readme-plugin clean check`). Note : readme n'enregistre pas
+  `verifyChannel` (le sous-build n'applique pas `.publishing` directement).
+* `3db43c6` — **GBL-014-4** : shim `conventions-plugin` `0.0.18 → 0.0.19`
+  (racine + sous-build). Aucun pin `0.0.20` disponible dans ce lot.
+* `0b8ebf3` — **GBL-013-10** : actions `node24`-natives sur les trois
+  workflows — `ci.yml` (`checkout@v7`, `setup-gradle@v6`),
+  `integration_test.yml` (`checkout@v7`, `setup-java@v6`, `cache@v6` ×2,
+  `upload-artifact@v7`) et `readme_action.yml` (`checkout@v7`,
+  `setup-java@v6`, `cache@v6` ×2).
+* `cbbe6fb` — **GBL-013-10** : image `cccp-ci-base` re-pinée
+  `sha256:03ead3787ed8f09068cc582191e4cd8f5e48e3ce696fe53836ecd826de57ea1f`
+  (Node 26.13.1).
+* Aucun code de production modifié ; aucun test exécuté en local
+  (Local = Build, Tests = CI).
+
+== Preuves CI
+
+| Commit | Workflow | Run | Résultat
+| `1109181` | `CI` | `43660609854` | ✅
+| `3db43c6` | `CI` | `43672577432` | ✅
+| `0b8ebf3` | `CI` | `43683425995` | ✅
+| `cbbe6fb` | `CI` | `43690097479` | ✅
+
+Zéro secret, zéro publication, zéro bump de version.
+
+== Fichiers touchés
+
+* `settings.gradle.kts`
+* `readme-plugin/settings.gradle.kts`
+* `ci/run.sh`
+* `.github/workflows/ci.yml`
+* `.github/workflows/integration_test.yml`
+* `.github/workflows/readme_action.yml`
+
+== Reste à faire
+
+* **RM-12** (readme-LLM / i18n) sur demande pilote : US-2→US-6 (refonte
+  README article 0124, infra `readme.llm`, domaine `readme.i18n`, tâche
+  `translateReadme`, BDD).
+* **Dette RM-1/5/6/8/9/10** post-RM-12-2.
+* Transverse : `bakery` (catalogue relabellé reverté), `container-provision` et
+  racines agrégateurs sans `verifyChannel`, Sonatype 130791 après reset
+  (GBL-014 US-6/US-7), GBL-013 US-7 (workflows `office` bloqués).

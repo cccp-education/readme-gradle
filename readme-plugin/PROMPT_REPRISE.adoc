@@ -1,57 +1,60 @@
-= PROMPT_REPRISE — Chiraq (readme-plugin) — Session 014
-:date: 2026-11-14
-:session: 014
+= PROMPT_REPRISE — Chiraq (readme-plugin) — Session 016
+:session: 017
+:date: 2026-11-15
+:etat: ✅ GBL-014-5 / GBL-014-4 / GBL-013-10 livrés, CI verte ; suite = RM-12 sur demande pilote.
+
+== Session 016 terminée — canal dual + shim + Node LTS
+
+* **GBL-014-5** : settings (racine + `readme-plugin`) conditionnels sur
+  `-Pchannel` (défaut `jitpack`) ; dépôt JitPack + shim `useModule(...)`
+  **seulement** en `jitpack` ; `ci/run.sh` passe `-Pchannel` (`1109181`).
+* **GBL-014-4** : shim `conventions-plugin 0.0.18 → 0.0.19` (`3db43c6`).
+* **GBL-013-10** : actions `node24`-natives sur `ci.yml`,
+  `integration_test.yml`, `readme_action.yml` (`checkout@v7`,
+  `setup-gradle@v6`, `setup-java@v6`, `cache@v6`, `upload-artifact@v7`)
+  (`0b8ebf3`) ; image `cccp-ci-base@sha256:03ead378…` Node 26.13.1
+  (`cbbe6fb`).
+* CI `CI` **verte** sur les 4 commits (`43660609854`, `43672577432`,
+  `43683425995`, `43690097479`).
+* Rapport `.agents/sessions/016-gbl-014-5-channel-rollout.adoc`.
+
+== Session 015 terminée — EAGER : publication JitPack canal unique
+
+Alignement des documents : JitPack seul canal ; Central/Portal retirés.
+**Nuance GBL-014 (S-016)** : le canal est désormais une **propriété du build**
+(`-Pchannel=central|jitpack`, défaut `jitpack`) ; JitPack reste le défaut et
+le seul canal servi aujourd'hui.
 
 == Session 014 terminée — GBL-013 vague 2 : CI sur l'image de runtime
 
-* `ci/run.sh` (`fast`/`test` = `-p readme-plugin clean check`).
-* `ci.yml` épinglé sur `cccpeducation/cccp-ci-base@sha256:4722c1bc…` ;
-  `setup-java`, caches manuels et `chmod` supprimés.
-* Scénario de permission root-safe (`assumeTrue` quand l'utilisateur est root).
-* Run `43503179967` **VERT** (commit `41d09e6`). Rapport
-  `readme-plugin/.agents/sessions/014-gbl-013-wave2.adoc`.
-* Suite : RM-12 (readme-LLM/i18n) sur demande pilote.
+`ci/run.sh` (`fast`/`test` = `-p readme-plugin clean check`) ; `ci.yml` épinglé
+sur l'image ; scénario de permission root-safe. Run `43503179967` VERT.
+Rapport `readme-plugin/.agents/sessions/014-gbl-013-wave2.adoc`.
 
-== Session 012 terminée — US-ROLLOUT-6 adoption version catalog (cross-borough MEMPHIS)
+== Prochaine session — 017 : RM-12 (readme-LLM / i18n), sur accord pilote
 
-EPIC MEM-CAT-ROLLOUT ordre 6 (référentiel `workspace-bom/BACKLOG.adoc`).
-
-Pin `ws` 0.0.31 dans settings (D4) + `version = ws.versions.readme.plugin.get()`
-(D3, remplace dérivation toml local) + id inline `education.cccp.readme`
-(stable publication identity). Garde `ReadmePluginPublicationTest` 3/3
-(RED → GREEN, mirror `CodexPluginPublicationTest` S-211).
-Gate : `check` VERT 83 tests 0 FAIL (22 unit + 5 FT + 56 cucumber, baseline
-80 → +3) + `publishToMavenLocal` VERT (POM 0.0.1 version dérivée ws).
-Rapport : `.agents/sessions/012-us-rollout-6-version-catalog.adoc`.
-
-== Prochaine session — 013 : RM-12-2 refonte README article 0124
-
-- README.md racine (consommateur) : perd sections dev (build/test/
-  dépendances), gagne Clone & Use + Personalization (leviers readme.yml).
-- readme-plugin/README.md (plugin) : gagne Périmètre (fait/ne fait pas)
-  + Tâches Gradle exhaustives (inputs/outputs/dépendances), perd Quick Start.
-- README_truth.adoc audience = plugin confirmée (référence canonique).
-- Sync 20 fichiers i18n (10 langues × 2 audiences) — manuel pour cette
-  US, l'automatisation arrive en RM-12-5.
-
-Puis enchaîner :
-- RM-12-3 : Infra LLM `readme.llm` (port + adapter + LlmBuildService N1)
-- RM-12-4 : Domaine `readme.i18n` + adapter (pattern bakery)
-- RM-12-5 : Tâche `translateReadme` + dogfooding 20 fichiers
-- RM-12-6 : Cucumber BDD `readme_i18n.feature`
+. **RM-12-2** — refonte README article 0124 (consommateur : Clone & Use +
+   Personalization ; plugin : Périmètre + tâches exhaustives).
+. **RM-12-3** — infra LLM `readme.llm` (port `fun interface` + adapter
+   `ChatModel` + `LlmBuildService` de codebase N1).
+. **RM-12-4** — domaine `readme.i18n` + `ReadmeTranslationServiceAdapter`
+   (pattern bakery `TranslationService` N0).
+. **RM-12-5** — tâche `translateReadme` + dogfooding 20 fichiers.
+. **RM-12-6** — Cucumber BDD `readme_i18n.feature`.
 
 == Contexte
 
-Borough CHIRAQ 🟤 — 13ème borough. Publié Maven Central (0.0.1).
-Version désormais dérivée du catalog ws (MEM-CAT-ROLLOUT-6 ✅ S-012).
-EPIC RM-12 : US-0 ✅ S-010, US-1 ✅ S-011, US-2→6 À FAIRE.
-Dette technique : RM-1/5/6/8/9/10 À FAIRE (post RM-12-2).
+Borough CHIRAQ 🟤 — 13ème borough. Version dérivée du catalogue `ws`
+(MEM-CAT-ROLLOUT-6 ✅ S-012). EPIC RM-12 : US-0 ✅ S-010, US-1 ✅ S-011,
+US-2→6 À FAIRE. Dette RM-1/5/6/8/9/10 À FAIRE (post RM-12-2).
 
 == Rappel
 
-- Git autorisé (décision pilote 2026-09-17) — zéro secret commité
-- Vérifier AGENT.adoc avant d'agir
-- Pas de tests en fin de session sans permission
-- Placeholder `<YOUR_GITHUB_PAT>` = sentinel officiel (à préserver)
-- Pattern post-SLD-8 : consommer `LlmBuildService` de codebase N1,
-  ne pas dupliquer `LlmProviderChatModelAdapter` (consolidé N1 S-073)
+* **Local = Build, Tests = CI** ; zéro Python ; English only code/tests.
+* Canal = propriété du build (`-Pchannel`, défaut `jitpack`), jamais une
+  branche ; zéro mélange de coordonnées dans un même catalogue.
+* Version = tag `vX.Y.Z` : bump **avant** le tag ; jamais republier.
+* Git autorisé (décision pilote 2026-09-17) — zéro secret commité.
+* Placeholder `<YOUR_GITHUB_PAT>` = sentinel officiel (à préserver).
+* Pattern post-SLD-8 : consommer `LlmBuildService` de codebase N1, ne pas
+  dupliquer `LlmProviderChatModelAdapter`.
